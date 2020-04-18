@@ -151,13 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="debug.h" />
     <ClInclude Include="pacp.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="tls.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pacp-tls-parser.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="pacp.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

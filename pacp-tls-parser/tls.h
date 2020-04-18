@@ -6,7 +6,6 @@
 //#include <sys/stat.h>
 #include <time.h>
 #include <iostream>
-#include "debug.h"//fg
 
 #define NO_ERROR 0
 #define INVALID_FILE_LENGTH 1
@@ -138,4 +137,4 @@ int is_valid_tls_version(unsigned char major, unsigned char minor);
 unsigned char* get_safe_input_file(char *path, int *file_size);
 void fclose_safe(FILE * stream);
 void handle_errors(int error_code);
-int handlePacket(unsigned char *buf, int file_size, const char *output_info, const char *output_date);
+int handlePacket(unsigned char *buf, int file_size, FILE * out_fd);

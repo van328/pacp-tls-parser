@@ -13,7 +13,7 @@ int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls
 	myContentType = raw[pos++];//fg
 	// Only handshake messages of TLS version 1.0 - 1.2 are allowed
 	if (myContentType != CHANGE_CIPHER_SPEC && myContentType != ALERT && myContentType != HANDSHAKE && myContentType != APPLICATION_DATA) {
-		DebugOut.DebugPrint(2, "INVALID_CONTENT_TYPE: %d\n", myContentType);//fg
+		printf( "INVALID_CONTENT_TYPE: %d\n", myContentType);//fg
 		return INVALID_CONTENT_TYPE;
 	}
 
@@ -46,7 +46,7 @@ int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls
 
 	// Check if the sizes are correct (record protocol headers + length == file size)
 	if (tls_message->fLength + pos > size) {
-		DebugOut.DebugPrint(2, "[debug]tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
+		printf( "[debug]tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
 		return INVALID_FILE_LENGTH;
 	}
 	//sometimes there are few msgs in one tcp packet
@@ -665,7 +665,7 @@ void handle_errors(int error_code) {
 	//exit(0);
 }
 
-int handlePacket(unsigned char *buf,int file_size, const char *output_info, const char *output_date) {
+int handlePacket(unsigned char *buf,int file_size, FILE * out_fd) {
 	static int count = 0;
 	count++;
 	int err;
@@ -684,25 +684,25 @@ int handlePacket(unsigned char *buf,int file_size, const char *output_info, cons
 	// Stop processing in case there was an error
 	handle_errors(err);
 
-	FILE *fpInfo = fopen(output_info, "a");
-	if (fpInfo == NULL) {
-		DebugOut.DebugPrint(2, "Open info file fail£¡\n");//fg
-		return 0;
-	}
-	FILE *fpData = fopen(output_date, "ab");
-	if (fpData == NULL) {
-		DebugOut.DebugPrint(2, "Open data file fail£¡\n");//fg
-		return 0;
-	}
-	fprintf(fpInfo, "---------------------------------------%d-------------------------------------------\n",count);
-	fprint_tls_record_layer_info(fpInfo, &tls_message);
+	//FILE *fpInfo = fopen(output_info, "a");
+	//if (fpInfo == NULL) {
+	//	DebugOut.DebugPrint(2, "Open info file fail£¡\n");//fg
+	//	return 0;
+	//}
+	//FILE *fpData = fopen(output_date, "ab");
+	//if (fpData == NULL) {
+	//	DebugOut.DebugPrint(2, "Open data file fail£¡\n");//fg
+	//	return 0;
+	//}
+	fprintf(out_fd, "---------------------------------------%d-------------------------------------------\n",count);
+	fprint_tls_record_layer_info(out_fd, &tls_message);
 	if (tls_message.cType == APPLICATION_DATA) {
-		err = parse_application_data(fpData, tls_message.body, tls_message.fLength);
+		err = parse_application_data(out_fd, tls_message.body, tls_message.fLength);
 	}
 	else if (tls_message.cType == CHANGE_CIPHER_SPEC || tls_message.cType == ALERT) {
-		fprintf(fpInfo, "data:\n");
-		err = parse_application_data(fpInfo, tls_message.body, tls_message.fLength);
-		fprintf(fpInfo,"\n");
+		fprintf(out_fd, "data:\n");
+		err = parse_application_data(out_fd, tls_message.body, tls_message.fLength);
+		fprintf(out_fd,"\n");
 	}
 	else if (tls_message.cType == ENCRYPTED_HANDSHAKE) {
 		//temporarily do nothing
@@ -711,9 +711,9 @@ int handlePacket(unsigned char *buf,int file_size, const char *output_info, cons
 	else{
 		switch (tls_message.hsType) {
 		case 1:
-			err = parse_client_hello(fpInfo, tls_message.body, tls_message.mLength); break;
+			err = parse_client_hello(out_fd, tls_message.body, tls_message.mLength); break;
 		case 2:
-			err = parse_server_hello(fpInfo, tls_message.body, tls_message.mLength); break;
+			err = parse_server_hello(out_fd, tls_message.body, tls_message.mLength); break;
 		case 11:
 			err = parse_certificate(tls_message.mLength); break;
 		case 12:
@@ -733,12 +733,12 @@ int handlePacket(unsigned char *buf,int file_size, const char *output_info, cons
 		free(tls_message.body);
 	}
 	handle_errors(err);
-	fclose(fpInfo);
-	fclose(fpData);
+	//fclose(fpInfo);
+	//fclose(fpData);
 	if (nextSize > 0 && err==0) {
-		printf("file_size = %d, nextSize = %d\n", file_size, nextSize);
+		//printf("file_size = %d, nextSize = %d\n", file_size, nextSize);
 		count--;
-		err = handlePacket(buf + ((file_size - nextSize) * sizeof(unsigned char)), nextSize, output_info, output_date);
+		err = handlePacket(buf + ((file_size - nextSize) * sizeof(unsigned char)), nextSize, out_fd);
 	}
 		
 	return err;

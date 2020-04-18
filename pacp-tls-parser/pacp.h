@@ -135,4 +135,4 @@ struct ip_info_s {
 
 
 
-int parse_pcap_file(const char *input_file, const char *output_info, const char *output_date, int debug);
+int parse_pcap_file(const char *input_file, const char *output_info,  int debug);

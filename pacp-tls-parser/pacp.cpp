@@ -313,9 +313,9 @@ struct flow_s *
 
 
 int
-parse_pcap_file(const char *input_file, const char *output_info, const char *output_date, int debug)
+parse_pcap_file(const char *input_file, const char *output_info, int debug)
 {
-	FILE *fd;
+	FILE *in_fd,*out_fd;
 	int n, rc, size_of_data;
 	struct pcap_hdr_s global_hdr;
 	struct pcaprec_hdr_s pkt_hdr;
@@ -332,13 +332,19 @@ parse_pcap_file(const char *input_file, const char *output_info, const char *out
 
 	memset(&cnt, 0, sizeof(cnt));
 
-	fd = fopen(input_file, "rb");
-	if (fd == NULL) {
+
+	in_fd = fopen(input_file, "rb");
+	if (in_fd == NULL) {
 		printf("error reading file %s\n", input_file);
 		return -1;
 	}
+	out_fd = fopen(output_info, "a");
+	if (out_fd == NULL) {
+		printf("Open info file fail£¡\n");//fg
+		return 0;
+	}
 
-	rc = fread(&global_hdr, sizeof(struct pcap_hdr_s), 1, fd);
+	rc = fread(&global_hdr, sizeof(struct pcap_hdr_s), 1, in_fd);
 	if (rc < 1) {
 		printf("could not read global hdr\n");
 		return -2;
@@ -353,7 +359,7 @@ parse_pcap_file(const char *input_file, const char *output_info, const char *out
 
 	n = 0;
 	while (n < MAX_NUM_PACKETS) {
-		rc = fread(&pkt_hdr, sizeof(struct pcaprec_hdr_s), 1, fd);
+		rc = fread(&pkt_hdr, sizeof(struct pcaprec_hdr_s), 1, in_fd);
 		if (rc < 1) {
 			break;
 		}
@@ -369,14 +375,14 @@ parse_pcap_file(const char *input_file, const char *output_info, const char *out
 			extra_read = 0;
 		}
 
-		rc = fread(packets[n], pkt_hdr.incl_len, 1, fd);
+		rc = fread(packets[n], pkt_hdr.incl_len, 1, in_fd);
 		if (rc < 1) {
 			printf("NeedData..\n");
 			break;
 		}
 
 		if (extra_read > 0) {
-			rc = fread(dummy, extra_read, 1, fd);
+			rc = fread(dummy, extra_read, 1, in_fd);
 			if (rc < 1) {
 				printf("read extra_read fail..\n");
 
@@ -459,28 +465,24 @@ parse_pcap_file(const char *input_file, const char *output_info, const char *out
 					cnt.num_tcp_pkts++;
 
 					copy_bytes(packets[n] + sizeof(*eth_hdr) + sizeof(*ip_hdr), &tcp_hdr, sizeof(tcp_hdr));
-					//fg
 					
 					if (load_size > 0) {
 						memcpy(buf, packets[n] + sizeof(*eth_hdr) + sizeof(*ip_hdr)+ sizeof(tcp_hdr),load_size);
 
-						//printf("load_size=%d sizeof(buf)=%d\n ", load_size, sizeof(buf));
-						unsigned char ch;
+				/*		unsigned char ch;
 						for(int i = 0; i < load_size; i++) {
 							ch = *(buf + i*sizeof(char));
 							printf("%02x ", ch);
 						}
-						printf("\n");
-						int err = handlePacket(buf, load_size,output_info,output_date);
-						if (!err) {
+						printf("\n");*/
+						int err = handlePacket(buf, load_size, out_fd);///tls
+						/*if (!err) {
 							printf("\n[OK]: Finished parsing of message!\n");
 						}
 						else
-							printf("\n[NOT OK]: err = %d!\n", err);
-
+							printf("\n[NOT OK]: err = %d!\n", err);*/
 
 					}
-					
 
 					_short_switcher(&tcp_hdr.ofs_ctrl);
 					_int_switcher(&tcp_hdr.seq_num);
@@ -581,7 +583,7 @@ parse_pcap_file(const char *input_file, const char *output_info, const char *out
 		print_counters(&cnt);
 	}
 
-	fclose(fd);
+	fclose(in_fd);
 
 	if (debug) {
 		printf("Printing hash table...\n");
