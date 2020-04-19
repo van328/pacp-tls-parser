@@ -131,6 +131,8 @@ int parse_certificate(uint16_t size);
 int parse_server_key_exchange(uint16_t size);
 int parse_server_hello_done(uint16_t size);
 int parse_client_key_exchange(unsigned char *message, uint16_t size);
+
+int parse_change_cipher_spec(unsigned char* message, uint16_t size);
 void clean_client_hello(ClientHello message);
 void clean_server_hello(ServerHello message);
 int is_valid_tls_version(unsigned char major, unsigned char minor);

@@ -338,7 +338,7 @@ parse_pcap_file(const char *input_file, const char *output_info, int debug)
 		printf("error reading file %s\n", input_file);
 		return -1;
 	}
-	out_fd = fopen(output_info, "a");
+	out_fd = fopen(output_info, "w");
 	if (out_fd == NULL) {
 		printf("Open info file fail£¡\n");//fg
 		return 0;
@@ -579,6 +579,7 @@ parse_pcap_file(const char *input_file, const char *output_info, int debug)
 	}
 
 	if (debug) {
+		printf("\nSummary:\n", n);
 		printf("num pkts read = %d\n", n);
 		print_counters(&cnt);
 	}
