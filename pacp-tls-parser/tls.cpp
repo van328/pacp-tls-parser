@@ -1,6 +1,7 @@
 #include "pch.h"
 #define _CRT_SECURE_NO_WARNINGS
 #include "tls.h"
+//#define fprintf(a,b,c) printf(b,c)
 
 int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, int* nextSize, int debug) {
 	// Record layer
@@ -16,7 +17,7 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 		if (debug) {
 			printf("INVALID_CONTENT_TYPE: %d\n", myContentType);//fg
 		}
-		return INVALID_CONTENT_TYPE;
+		return INVALID_CONTENT_TYPE; //2
 	}
 
 	if (!is_valid_tls_version(raw[pos], raw[pos + 1])) {
@@ -136,7 +137,7 @@ int parse_other_ctype(FILE* fp, unsigned char* message, uint16_t size) {
 	//printf("\n");
 	return 0;
 }
-int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size) {
+int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size,int debug) {
 	if (size < MIN_CLIENT_HELLO_SIZE || message == NULL) {
 		return INVALID_FILE_LENGTH;
 	}
@@ -194,7 +195,10 @@ int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size) {
 	// The CompresionMethodStructure
 	client_hello.compresionMethod.length = message[pos++];
 	if (client_hello.compresionMethod.length != 1) {
-		fprintf(fp, "%x", client_hello.compresionMethod.length);
+		if(debug)
+			printf("%x", client_hello.compresionMethod.length);
+		else
+			fprintf(fp, "%x", client_hello.compresionMethod.length);
 		return INVALID_FILE_LENGTH;
 	}
 
@@ -208,8 +212,10 @@ int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size) {
 		client_hello.extensions = (unsigned char*)malloc(size - pos);
 		memcpy(client_hello.extensions, message + pos, size - pos);
 	}
-
-	fprint_client_hello_message(fp, &client_hello, size - pos);
+	if (debug)
+		print_client_hello_message(&client_hello, size - pos);
+	else
+		fprint_client_hello_message(fp, &client_hello, size - pos);
 
 	clean_client_hello(client_hello);
 
@@ -326,7 +332,7 @@ void print_client_hello_message(ClientHello* message, int extensions_length) {
 	printf("\n");
 }
 
-int parse_server_hello(FILE* fp, unsigned char* message, uint16_t size) {
+int parse_server_hello(FILE* fp, unsigned char* message, uint16_t size,int debug) {
 	if (size < MIN_SERVER_HELLO_SIZE || message == NULL) {
 		return INVALID_FILE_LENGTH;
 	}
@@ -383,8 +389,10 @@ int parse_server_hello(FILE* fp, unsigned char* message, uint16_t size) {
 		server_hello.extensions = (unsigned char*)malloc(size - pos);
 		memcpy(server_hello.extensions, message + pos, size - pos);
 	}
-
-	fprint_server_hello_message(fp, &server_hello, size - pos);
+	if(debug)
+		print_server_hello_message(&server_hello, size - pos);
+	else
+		fprint_server_hello_message(fp, &server_hello, size - pos);
 
 	clean_server_hello(server_hello);
 
@@ -721,22 +729,35 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 	//	DebugOut.DebugPrint(2, "Open info file fail£¡\n");//fg
 	//	return 0;
 	//}
-	//FILE *fpData = fopen(output_date, "ab");
-	//if (fpData == NULL) {
-	//	DebugOut.DebugPrint(2, "Open data file fail£¡\n");//fg
+	//FILE *out_fd = fopen(output_date, "ab");
+	//if (out_fd == NULL) {
+	//	printf("Open data file fail£¡\n");//fg
 	//	return 0;
 	//}
-	fprintf(out_fd, "---------------------------------------%d-------------------------------------------\n", count);
-	fprint_tls_record_layer_info(out_fd, &tls_message);
+	if (debug) {
+		printf("---------------------------------------%d:\n", count);
+		print_tls_record_layer_info(&tls_message);
+	}
+	else {
+		fprintf(out_fd, "---------------------------------------%d:\n", count);
+		fprint_tls_record_layer_info(out_fd, &tls_message);
+	}
+
 	if (tls_message.cType == APPLICATION_DATA) {
 		//err = parse_application_data(out_fd, tls_message.body, tls_message.fLength);
 		//temporarily do nothing
 		err = 0;
 	}
 	else if (tls_message.cType == CHANGE_CIPHER_SPEC || tls_message.cType == ALERT) {
-		fprintf(out_fd, "data:\n");
+		if (debug)
+			printf("data:\n");
+		else
+			fprintf(out_fd, "data:\n");
 		err = parse_change_cipher_spec(tls_message.body, tls_message.fLength);
-		fprintf(out_fd, "\n");
+		if (debug)
+			printf("\n");
+		else
+			fprintf(out_fd, "\n");
 	}
 	else if (tls_message.cType == ENCRYPTED_HANDSHAKE) {
 		//temporarily do nothing
@@ -745,9 +766,9 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 	else {
 		switch (tls_message.hsType) {
 		case 1:
-			err = parse_client_hello(out_fd, tls_message.body, tls_message.mLength); break;
+			err = parse_client_hello(out_fd, tls_message.body, tls_message.mLength,debug); break;
 		case 2:
-			err = parse_server_hello(out_fd, tls_message.body, tls_message.mLength); break;
+			err = parse_server_hello(out_fd, tls_message.body, tls_message.mLength,debug); break;
 		case 11:
 			err = parse_certificate(tls_message.mLength); break;
 		case 12:

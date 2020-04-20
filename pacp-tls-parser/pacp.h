@@ -19,8 +19,8 @@ typedef unsigned char mac_addr_t[6];
 
 #define MAX_HASH_LENGTH  131072 
 #define MAX_NUM_PACKETS  1000000
-#define MAX_FLOWS  1000
-#define MAX_PACKET_SIZE  1024
+//#define MAX_FLOWS  100
+#define MAX_PACKET_SIZE 1600// 1024
 
 //type
 
@@ -123,6 +123,12 @@ struct flow_s {
 	uint32 dst_seq_nums[MAX_NUM_PACKETS];
 	uint32 dst_ack_nums[MAX_NUM_PACKETS];
 	uint32 packets[MAX_NUM_PACKETS];
+	FILE* fd;
+	uint32 miss_len; //unused
+	uint8 isgmtls;
+	uint8 istls;
+	uint64 gmtls_len;
+	uint64 tls_len;
 	struct flow_s *next;
 };
 

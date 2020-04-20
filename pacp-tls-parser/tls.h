@@ -124,7 +124,7 @@ int parse_application_data(FILE *fp, unsigned char *message, uint16_t size);
 int parse_other_ctype(FILE *fp, unsigned char *message, uint16_t size);
 //int print_application_message(unsigned char *message, uint16_t size);
 
-int parse_client_hello(FILE *fp, unsigned char *message, uint16_t size);
+int parse_client_hello(FILE *fp, unsigned char *message, uint16_t size,int debug);
 void fprint_client_hello_message(FILE *fp, ClientHello *client_hello, int size);//fg
 void print_client_hello_message(ClientHello *client_hello, int size);
 int parse_server_hello(FILE *fp, unsigned char *message, uint16_t size);
