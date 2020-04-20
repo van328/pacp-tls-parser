@@ -7,12 +7,17 @@
 #include <time.h>
 #include <iostream>
 
+
 #define NO_ERROR 0
 #define INVALID_FILE_LENGTH 1
 #define INVALID_CONTENT_TYPE 2
 #define INVALID_VERSION 3
 #define UNSUPPORTED_MESSAGE_TYPE 4
 #define INVALID_FILE_LENGTH_FOR_CLIENT_KEY_EXCHANGE 5
+
+#define NONTLS 0
+#define TLS 1
+#define GMTLS 2
 
 #define MIN_RECORD_LAYER_SIZE 3 // Has to be atleast (ContentType + TLS version)
 #define MIN_CLIENT_HELLO_SIZE 38 // A client hello has to be atleast 38 bytes
@@ -111,7 +116,7 @@ typedef struct { } ServerKeyExchange; // Contains KeyExchangeAlgorithm parameter
 typedef struct { } ClientKeyExchange; // Contains either a PreMasterSecret or DH Client Parameters like (key) and is not subject of parsing
 typedef struct { } ServerHelloDone;   // This message contains nothing, it's defined just for the sake of complentness
 
-int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls_message, int *nextSizef);
+int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls_message, int *nextSizef, int debug);
 void fprint_tls_record_layer_info(FILE *fp, HandshakeMessage *tls_message);//fg
 void print_tls_record_layer_info(HandshakeMessage *tls_message);
 
@@ -136,7 +141,9 @@ int parse_change_cipher_spec(unsigned char* message, uint16_t size);
 void clean_client_hello(ClientHello message);
 void clean_server_hello(ServerHello message);
 int is_valid_tls_version(unsigned char major, unsigned char minor);
+int tls_version_type(unsigned char major, unsigned char minor);
 unsigned char* get_safe_input_file(char *path, int *file_size);
 void fclose_safe(FILE * stream);
-void handle_errors(int error_code);
-int handlePacket(unsigned char *buf, int file_size, FILE * out_fd);
+void handle_errors(int error_code,int debug);
+int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, int* nextSize, int debug);
+int handleTLSPacket(unsigned char *buf, int file_size, FILE * out_fd,int debug);

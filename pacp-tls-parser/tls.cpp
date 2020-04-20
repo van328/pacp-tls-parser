@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "tls.h"
 
-int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, int* nextSize) {
+int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, int* nextSize, int debug) {
 	// Record layer
 
 	if (size <= MIN_RECORD_LAYER_SIZE || raw == NULL) {
@@ -13,7 +13,9 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 	myContentType = raw[pos++];//fg
 	// Only handshake messages of TLS version 1.0 - 1.2 are allowed
 	if (myContentType != CHANGE_CIPHER_SPEC && myContentType != ALERT && myContentType != HANDSHAKE && myContentType != APPLICATION_DATA) {
-		printf("INVALID_CONTENT_TYPE: %d\n", myContentType);//fg
+		if (debug) {
+			printf("INVALID_CONTENT_TYPE: %d\n", myContentType);//fg
+		}
 		return INVALID_CONTENT_TYPE;
 	}
 
@@ -46,7 +48,7 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 
 	// Check if the sizes are correct (record protocol headers + length == file size)
 	if (tls_message->fLength + pos > size) {
-		printf("[debug]tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
+		printf("[debug]: tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
 		return INVALID_FILE_LENGTH;
 	}
 	//sometimes there are few msgs in one tcp packet
@@ -184,8 +186,8 @@ int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size) {
 		pos += client_hello.csCollection.length;
 	}
 
-	// CompresionMethod 2 bytes and Extensions 1 at least
-	if (size < pos + 3) {
+	// CompresionMethod 1 bytes and Extensions 1 at least
+	if (size < pos + 2) {
 		return INVALID_FILE_LENGTH;
 	}
 
@@ -586,8 +588,23 @@ void clean_server_hello(ServerHello message) {
 }
 
 int is_valid_tls_version(unsigned char major, unsigned char minor) {
-	return major == 0x03 && (minor == 0x01 || minor == 0x02 || minor == 0x03);
+	bool a = (major == 0x03 && (minor == 0x01 || minor == 0x02 || minor == 0x03));
+	if (a)
+		return a;
+	bool b = (major == 0x01 && (minor == 0x01));
+	return b;
 }
+
+int tls_version_type(unsigned char major, unsigned char minor) {
+	if (major == 0x03 && (minor == 0x01 || minor == 0x02 || minor == 0x03))
+		return TLS;
+
+	if (major == 0x01 && (minor == 0x01))
+		return GMTLS;
+
+	return NONTLS;
+}
+
 
 unsigned char* get_safe_input_file(char* path, int* file_size) {
 
@@ -653,7 +670,7 @@ void fclose_safe(FILE* stream) {
 	}
 }
 
-void handle_errors(int error_code) {
+void handle_errors(int error_code, int debug) {
 	if (!error_code) {
 		// In case there is no error, continue.
 		return;
@@ -662,10 +679,14 @@ void handle_errors(int error_code) {
 	printf("[ERROR]: ");
 
 	switch (error_code) {
-	case 1: printf("The lengths specified in the input file are not valid.\n"); break;
-	case 2: printf("The input file is not an TLS handshake message.\n"); break;
+	case 1: // INVALID_FILE_LENGTH
+		printf("The lengths specified in the input file are not valid.\n"); break;
+	case 2: //	INVALID_CONTENT_TYPE
+		printf("The input file is not an TLS handshake message.\n");
+		break;
 	case 3: printf("The message is not of a supported version (TLS 1.0 - TLS 1.2).\n"); break;
-	case 4: printf("Unsupported handshake message type.\n"); break;
+	case 4: //UNSUPPORTED_MESSAGE_TYPE
+		printf("Unsupported handshake message type.\n"); break;
 	case 5: printf("The lengths specified in the input file are not valid for client_key_exchange message.\n"); break;
 	default:
 		printf("Something truly unexpected happend.\n"); break;
@@ -674,16 +695,16 @@ void handle_errors(int error_code) {
 	//exit(0);
 }
 
-int handlePacket(unsigned char* buf, int file_size, FILE* out_fd) {
+int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) {
 	static int count = 0;
 	count++;
-	int err;
+	int err, type = 0;
 	// Parse the record layer headers and save the actual handshake message into tls_message->body
 	HandshakeMessage tls_message;
 	memset(&tls_message, 0, sizeof(tls_message));
 	int nextSize = 0;
-	//unsigned char *buf2;
-	err = initialize_tls_structure(buf, file_size, &tls_message, &nextSize);
+
+	err = initialize_tls_structure(buf, file_size, &tls_message, &nextSize, 0);
 
 	// Close the original buffer containing the file stream, as all data has to be in tls_message
 	/*if (buf) {
@@ -691,8 +712,10 @@ int handlePacket(unsigned char* buf, int file_size, FILE* out_fd) {
 	}*/
 
 	// Stop processing in case there was an error
-	handle_errors(err);
-
+	if (debug)
+		handle_errors(err, debug);
+	if (err == INVALID_CONTENT_TYPE)
+		return(err);
 	//FILE *fpInfo = fopen(output_info, "a");
 	//if (fpInfo == NULL) {
 	//	DebugOut.DebugPrint(2, "Open info file fail£¡\n");//fg
@@ -743,13 +766,13 @@ int handlePacket(unsigned char* buf, int file_size, FILE* out_fd) {
 	if (tls_message.body) {
 		free(tls_message.body);
 	}
-	handle_errors(err);
+	handle_errors(err, debug);
 	//fclose(fpInfo);
 	//fclose(fpData);
 	if (nextSize > 0 && err == 0) {
 		//printf("file_size = %d, nextSize = %d\n", file_size, nextSize);
 		count--;
-		err = handlePacket(buf + ((file_size - nextSize) * sizeof(unsigned char)), nextSize, out_fd);
+		err = handleTLSPacket(buf + ((file_size - nextSize) * sizeof(unsigned char)), nextSize, out_fd, debug);
 	}
 
 	return err;

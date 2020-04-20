@@ -19,7 +19,11 @@ typedef unsigned char mac_addr_t[6];
 
 #define MAX_HASH_LENGTH  131072 
 #define MAX_NUM_PACKETS  1000000
+#define MAX_FLOWS  1000
 #define MAX_PACKET_SIZE  1024
+
+//type
+
 
 
 struct pcap_hdr_s {
