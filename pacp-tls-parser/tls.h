@@ -116,22 +116,18 @@ typedef struct { } ServerKeyExchange; // Contains KeyExchangeAlgorithm parameter
 typedef struct { } ClientKeyExchange; // Contains either a PreMasterSecret or DH Client Parameters like (key) and is not subject of parsing
 typedef struct { } ServerHelloDone;   // This message contains nothing, it's defined just for the sake of complentness
 
-int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls_message, HandshakeMessage* tls_message2,  int *nextSizef, int debug);
-void fprint_tls_record_layer_info(FILE *fp, HandshakeMessage *tls_message);//fg
-void print_tls_record_layer_info(HandshakeMessage *tls_message);
+int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls_message, HandshakeMessage* tls_message2,  int *nextSizef);
+void print_tls_record_layer_info(FILE *fp, HandshakeMessage *tls_message);//fg
 
 int parse_application_data(FILE *fp, unsigned char *message, uint16_t size);
 int parse_other_ctype(FILE *fp, unsigned char *message, uint16_t size);
 //int print_application_message(unsigned char *message, uint16_t size);
 
 int parse_client_hello(FILE *fp, unsigned char *message, uint16_t size,int debug);
-void fprint_client_hello_message(FILE *fp, ClientHello *client_hello, int size);//fg
-void print_client_hello_message(ClientHello *client_hello, int size);
+void print_client_hello_message(FILE *fp, ClientHello *client_hello, int size);//fg
 int parse_server_hello(FILE *fp, unsigned char *message, uint16_t size);
-void fprint_server_hello_message(FILE *fp, ServerHello *message, int extensions_length);
-void print_server_hello_message(ServerHello *message, int extensions_length);
-void fprint_tls_version(FILE *fp, uint8_t minor);
-void print_tls_version(uint8_t minor);
+void print_server_hello_message(FILE *fp, ServerHello *message, int extensions_length);
+void print_tls_version(FILE *fp, uint8_t minor);
 int parse_certificate(FILE* fp, uint16_t size);
 int parse_server_key_exchange(FILE* fp, uint16_t size);
 int parse_server_hello_done(FILE* fp, uint16_t size);
@@ -145,6 +141,6 @@ int is_valid_tls_version(unsigned char major, unsigned char minor);
 int tls_version_type(unsigned char major, unsigned char minor);
 unsigned char* get_safe_input_file(char *path, int *file_size);
 void fclose_safe(FILE * stream);
-void handle_errors(int error_code,int debug);
-int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, int* nextSize, int debug);
+void handle_errors(int error_code);
+int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls_message, HandshakeMessage* tls_message2, int* nextSize);
 int handleTLSPacket(unsigned char *buf, int file_size, FILE * out_fd,int debug);
