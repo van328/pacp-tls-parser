@@ -7,13 +7,14 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 
-const char* input_file = "gmssl20.pcap";
-const char* output_info = "info.txt";
+const char* input_file = "./pcap_file/gmssl100.pcap";
+const char* output_folder = "./tls_file/";
+//const char* output_info = "info.txt";
 //const char* output_data = "data";
 
 int main(int argc, char *argv[])
 {
 	
-	parse_pcap_file(input_file, output_info, 1);
+	parse_pcap_file(input_file, output_folder, 1);
 	//输出作为参数
 }

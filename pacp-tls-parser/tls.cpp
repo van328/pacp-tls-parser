@@ -14,8 +14,8 @@ void info_printf(FILE* fp, const char* format, ...)
 	}
 	else {
 		va_list arg;
-		va_start(arg, format); vfprintf(fp, format, arg); vprintf(format, arg);
-		va_end(arg);
+		va_start(arg, format); vfprintf(fp, format, arg); va_end(arg);
+
 	}
 }
 
@@ -67,7 +67,7 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 
 	// Check if the sizes are correct (record protocol headers + length == file size)
 	if (tls_message->fLength + pos > size) {
-		printf("[debug]: tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
+		printf("[debug]: not end :tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
 		return INVALID_FILE_LENGTH;
 	}
 	//sometimes there are few msgs in one tcp packet
@@ -80,33 +80,40 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 	}
 
 	if (tls_message->cType == HANDSHAKE) { //fg
+		int t = raw[pos++];
+		if (t >= 0 && t <= 20) {
 
-		tls_message->hsType = (HandshakeType)raw[pos++];
+			tls_message->hsType = (HandshakeType)t;
 
-		// Convert raw[6], raw[7] and raw[8] into uint24_t number
-		// It's actually uint24_t but thats not defined
-		tls_message->mLength = (0x00 << 24) + (raw[pos] << 16) + (raw[pos + 1] << 8) + raw[pos + 2];
-		pos += 3;
+			// Convert raw[6], raw[7] and raw[8] into uint24_t number
+			// It's actually uint24_t but thats not defined
+			tls_message->mLength = (0x00 << 24) + (raw[pos] << 16) + (raw[pos + 1] << 8) + raw[pos + 2];
+			pos += 3;
 
-		// Check if the sizes are correct (fLength value == mLength value + HandshakeType (1 byte) + mLength (3 bytes))
-		//maybe there is the second handshake message
-		if (tls_message->fLength > tls_message->mLength + 4) {
-			if (tls_message->fLength != tls_message->mLength + 4 + 4) {
+			// Check if the sizes are correct (fLength value == mLength value + HandshakeType (1 byte) + mLength (3 bytes))
+			//maybe there is the second handshake message
+			if (tls_message->fLength > tls_message->mLength + 4) {
+				if (tls_message->fLength != tls_message->mLength + 4 + 4) {
+					return INVALID_FILE_LENGTH;
+				}
+				tls_message2->mLength = 0;
+				tls_message2->cType = HANDSHAKE;
+				tls_message2->version.major = raw[1];
+				tls_message2->version.minor = raw[2];
+				tls_message2->fLength = tls_message->fLength;
+				tls_message2->hsType = (HandshakeType)raw[pos + tls_message->mLength];
+				if (tls_message2->hsType != SERVER_HELLO_DONE)//14;
+					printf("second tls_message is not SERVER_HELLO_DONE\n");
+				//tls_message2->hsType = SERVER_HELLO_DONE; //
+
+			}
+			else if (tls_message->fLength != tls_message->mLength + 4) {
 				return INVALID_FILE_LENGTH;
 			}
-			tls_message2->mLength = 0;
-			tls_message2->cType = HANDSHAKE;
-			tls_message2->version.major = raw[1];
-			tls_message2->version.minor = raw[2];
-			tls_message2->fLength = tls_message->fLength;
-			tls_message2->hsType = (HandshakeType)raw[pos + tls_message->mLength];
-			if (tls_message2->hsType != SERVER_HELLO_DONE)//14;
-				printf("second tls_message is not SERVER_HELLO_DONE\n");
-			//tls_message2->hsType = SERVER_HELLO_DONE; //
-
 		}
-		else if (tls_message->fLength != tls_message->mLength + 4) {
-			return INVALID_FILE_LENGTH;
+		else {
+			tls_message->hsType = ENCRYPTED_HANDSHAKE_MESSAGE;
+			tls_message->mLength = tls_message->fLength;
 		}
 	}
 	else {
@@ -164,7 +171,7 @@ int parse_other_ctype(FILE* fp, unsigned char* message, uint16_t size) {
 	//printf("\n");
 	return 0;
 }
-int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size, int debug) {
+int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size) {
 	if (size < MIN_CLIENT_HELLO_SIZE || message == NULL) {
 		return INVALID_FILE_LENGTH;
 	}
@@ -222,10 +229,7 @@ int parse_client_hello(FILE* fp, unsigned char* message, uint16_t size, int debu
 	// The CompresionMethodStructure
 	client_hello.compresionMethod.length = message[pos++];
 	if (client_hello.compresionMethod.length != 1) {
-		if (debug)
-			printf("%x", client_hello.compresionMethod.length);
-		else
-			info_printf(fp, "%x", client_hello.compresionMethod.length);
+		info_printf(fp, "%x", client_hello.compresionMethod.length);
 		return INVALID_FILE_LENGTH;
 	}
 
@@ -306,7 +310,7 @@ void print_client_hello_message(FILE* fp, ClientHello* message, int extensions_l
 	}
 }
 
-int parse_server_hello(FILE* fp, unsigned char* message, uint16_t size, int debug) {
+int parse_server_hello(FILE* fp, unsigned char* message, uint16_t size) {
 	if (size < MIN_SERVER_HELLO_SIZE || message == NULL) {
 		return INVALID_FILE_LENGTH;
 	}
@@ -443,6 +447,31 @@ int parse_certificate(FILE* fp, uint16_t size) {
 	return 0;
 }
 
+//todo
+int parse_certificate_request(FILE* fp, uint16_t size) {
+	
+	if (size == 0) {
+		return INVALID_FILE_LENGTH;
+	}
+
+	info_printf(fp, "Certificate_Request.\n", size);
+
+	return 0;
+}
+
+//todo
+int parse_certificate_verify(FILE* fp, uint16_t size) {
+
+	if (size == 0) {
+		return INVALID_FILE_LENGTH;
+	}
+
+	info_printf(fp, "Certificate_Request.\n", size);
+
+	return 0;
+}
+
+
 int parse_server_key_exchange(FILE* fp, uint16_t size) {
 	// The actual algorithm and other stuff like digital signatures of params
 	// are not in scope as their presence is determined by extensions in hello messages
@@ -467,11 +496,11 @@ int parse_client_key_exchange(FILE* fp, unsigned char* message, uint16_t size) {
 	// We only check until we get to the exchange parameters, whose
 	// type is specified similiary as server key exchange parameters
 	// in earlier messages.
-	uint8_t length = message[0];
 
+	/*uint8_t length = message[0];
 	if (length != size - 1) {
 		return INVALID_FILE_LENGTH_FOR_CLIENT_KEY_EXCHANGE;
-	}
+	}*/
 
 	info_printf(fp, "The key exchange parameters provided are %d bytes long.\n", size);
 
@@ -625,7 +654,8 @@ void handle_errors(int error_code) {
 	case 3: printf("The message is not of a supported version (TLS 1.0 - TLS 1.2).\n"); break;
 	case 4: //UNSUPPORTED_MESSAGE_TYPE
 		printf("Unsupported handshake message type.\n"); break;
-	case 5: printf("The lengths specified in the input file are not valid for client_key_exchange message.\n"); break;
+	case 5: //INVALID_FILE_LENGTH_FOR_CLIENT_KEY_EXCHANGE
+		printf("The lengths specified in the input file are not valid for client_key_exchange message.\n"); break;
 	default:
 		printf("Something truly unexpected happend.\n"); break;
 	}
@@ -659,7 +689,7 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 	if (err == INVALID_CONTENT_TYPE)
 		return(err);
 
-	info_printf(out_fd, "---------------------------------------%d:\n", count);
+	info_printf(out_fd, "---------------------------------------\n");
 	print_tls_record_layer_info(out_fd, &tls_message);
 
 
@@ -681,22 +711,28 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 	}
 	else if (tls_message.cType == ENCRYPTED_HANDSHAKE) {
 		//temporarily do nothing
-		err = 0;
+
 	}
 	else {
 		switch (tls_message.hsType) {
 		case 1:
-			err = parse_client_hello(out_fd, tls_message.body, tls_message.mLength, debug); break;
+			err = parse_client_hello(out_fd, tls_message.body, tls_message.mLength); break;
 		case 2:
-			err = parse_server_hello(out_fd, tls_message.body, tls_message.mLength, debug); break;
+			err = parse_server_hello(out_fd, tls_message.body, tls_message.mLength); break;
 		case 11:
 			err = parse_certificate(out_fd, tls_message.mLength); break;
 		case 12:
 			err = parse_server_key_exchange(out_fd, tls_message.mLength); break;
+		case 13:
+			err = parse_certificate_request(out_fd, tls_message.mLength); break;  //todo
 		case 14:
 			err = parse_server_hello_done(out_fd, tls_message.mLength); break;
+		case 15:
+			err = parse_certificate_verify(out_fd, tls_message.mLength); break;
 		case 16:
 			err = parse_client_key_exchange(out_fd, tls_message.body, tls_message.mLength); break;
+		case 99:
+			info_printf(out_fd, "ENCRYPTED_HANDSHAKE_MESSAGE\n"); break;
 		default:
 			err = UNSUPPORTED_MESSAGE_TYPE; break;
 		}
@@ -711,7 +747,7 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 		free(tls_message.body);
 	}
 	handle_errors(err);
-	
+
 	if (nextSize > 0 && err == 0) {
 		//printf("file_size = %d, nextSize = %d\n", file_size, nextSize);
 		count--;

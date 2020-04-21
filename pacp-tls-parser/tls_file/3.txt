@@ -1,0 +1,173 @@
+--------Flow 3----------
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 47
+Handshake message type: 1
+
+Details of ClientHello:
+
+TLS Version: 1.0
+Random data: 67e645dfa1f3e7408d5474e35cad6ddb77eda8aa3bb061d96e6c4b
+SessionID: N/A
+Choosen cipher suites:
+0xe013 0xe011 
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 74
+Handshake message type: 2
+
+Details of ServerHello:
+
+TLS Version: 1.0
+Timestamp: Wed Apr  8 19:01:25 2020
+Random data: 5d148a4eabba931599af957e405a1f87ba4ff727222ee375664d946
+SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
+Choosen cipher suite: 0xe013
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 1496
+Handshake message type: 11
+
+The certificate chain provided is 1492 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 77
+Handshake message type: 12
+
+The key exchange parameters provided are 73 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 61
+Handshake message type: 13
+
+Certificate_Request.
+Server_Hello_Done.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 1046
+Handshake message type: 11
+
+The certificate chain provided is 1042 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 163
+Handshake message type: 16
+
+The key exchange parameters provided are 159 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 77
+Handshake message type: 15
+
+Certificate_Request.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 20
+Fragment length: 1
+
+parse_client_key_exchange£¬size:1.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 80
+Handshake message type: 99
+
+ENCRYPTED_HANDSHAKE_MESSAGE
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 20
+Fragment length: 1
+
+parse_client_key_exchange£¬size:1.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 80
+Handshake message type: 99
+
+ENCRYPTED_HANDSHAKE_MESSAGE
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 512
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 3040
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 768
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 544
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 2976
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1440
+

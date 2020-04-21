@@ -14,6 +14,7 @@ struct flow_s* list_of_flows = NULL;
 struct flow_s* table[MAX_HASH_LENGTH];
 struct flow_s* accroding_flow[MAX_NUM_PACKETS];
 struct counters cnt;
+char m_out_folder[10];
 
 struct ip_info_s*
 	find_ip(uint32 ip)
@@ -36,6 +37,21 @@ void add_to_ip_list(struct ip_info_s* f)
 	num_ip_info_elements++;
 }
 
+void get_output_file_name(int n,char * file_name) {
+	strcpy(file_name, m_out_folder);
+	char number[10];
+	_itoa(n, number, 10);
+	strcat(file_name, number);
+}
+
+int is_padding(int n, int pkt_len, int loadsize) {
+	for (int i = 0; i < 5 || i < loadsize; i++) {
+		if (packets[n][pkt_len - loadsize + i] != 0)
+			return 0;
+	}
+	return 1;
+
+}
 
 void print_global_hdr(struct pcap_hdr_s* p_hdr)
 {
@@ -185,7 +201,7 @@ return_dotted_ips(uint32* ip)
 void
 print_hash_table_flows()
 {
-	int i;
+	int i,j;
 	int counter = 0;
 	struct flow_s* tmp;
 
@@ -196,7 +212,12 @@ print_hash_table_flows()
 				fclose(tmp->fd);
 			counter++;
 			printf("\n-------------------------------------- ");
-			printf("Flow %u-------------------------------------\n", counter);
+			printf("Flow %u-------------------------------------\n", tmp->flow_id);
+			printf("Pakets Number:");
+			for (j = 0; j < tmp->num_pkts; j++) {
+				printf(" %d ", tmp->packets[j]+1);
+			}
+			printf(" \n");
 			printf("Source IP ");
 			print_dotted_ips(&tmp->src_ip);
 			printf("\n");
@@ -208,8 +229,10 @@ print_hash_table_flows()
 			printf("num pkts %u\n", tmp->num_pkts);
 			printf("\n");
 			if (tmp->gmtls_len > 0) {
-				char file_name[10];
-				_itoa(tmp->flow_id, file_name, 10);
+				/*char file_name[10];
+				_itoa(tmp->flow_id, file_name, 10);*/
+				char file_name[20];
+				get_output_file_name(tmp->flow_id, file_name);
 				FILE* fd = fopen(file_name, "rb");
 				if (fd == NULL) {
 					printf("Open tls data file fail£¡\n");//fg
@@ -224,7 +247,11 @@ print_hash_table_flows()
 				if (out_fd == NULL) {
 					printf("Open txt file fail£¡\n");//fg
 				}
-				handleTLSPacket(buf, tmp->gmtls_len, out_fd, 1);
+				else {
+					fprintf(out_fd,"--------Flow %u----------\n", tmp->flow_id);
+					handleTLSPacket(buf, tmp->gmtls_len, out_fd, 0);
+				}
+				
 				fclose(out_fd);
 			}
 			tmp = tmp->next;
@@ -363,7 +390,7 @@ struct flow_s*
 
 
 int
-parse_pcap_file(const char* input_file, const char* output_info, int debug)
+parse_pcap_file(const char* input_file, const char* output_folder, int debug)
 {
 	FILE* in_fd, * out_fd;
 	int n, rc, size_of_data;
@@ -395,6 +422,7 @@ parse_pcap_file(const char* input_file, const char* output_info, int debug)
 	//	printf("Open info file fail£¡\n");//fg
 	//	return 0;
 	//}
+	strcpy(m_out_folder, output_folder);
 
 	rc = fread(&global_hdr, sizeof(struct pcap_hdr_s), 1, in_fd);
 	if (rc < 1) {
@@ -509,13 +537,18 @@ parse_pcap_file(const char* input_file, const char* output_info, int debug)
 
 				ip_info->num_pkts_received++;
 				ip_info->num_bytes_received += size_of_data;
+				//NOTE: sometimes there are eth_padding in the end of the packet
 				int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(tcp_hdr);
+				if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
+					load_size = 0;
 				//unsigned char* buf = (unsigned char*)malloc(load_size);
 
 				switch (ip_hdr->proto) {
 
 				case 6: /* TCP */
 				{
+					if (n == 83)
+						int a = 0;
 					cnt.num_tcp_pkts++;
 					packet_type = "TCP";
 					int tls_type = 0;
@@ -562,10 +595,11 @@ parse_pcap_file(const char* input_file, const char* output_info, int debug)
 							add_to_hash_table(f);
 							cnt.num_tcp_flows++;
 
-							char file_name[10];
-							_itoa(f->flow_id, file_name, 10);
+							char file_name[20];
+							get_output_file_name(f->flow_id,file_name);
 							f->fd = fopen(file_name, "wb");
-
+							if (f->fd == NULL)
+								printf("err:open output file fail!");
 						}
 						else {
 							/* this could be retransmission of syn pkt */
@@ -603,6 +637,8 @@ parse_pcap_file(const char* input_file, const char* output_info, int debug)
 								printf("error:load_size > MIN_RECORD_LAYER_SIZE, but f == NULL\n");
 							}
 							else {
+								/*if (n == 98)   //debug
+									int a = 0;*/
 								if (f->isgmtls == 0) {
 									if (tls_type == GMTLS)
 										f->isgmtls = 1;//										packet_type = "TLS";

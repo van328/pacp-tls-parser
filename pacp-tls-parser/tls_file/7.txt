@@ -1,0 +1,18 @@
+--------Flow 7----------
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 79
+Handshake message type: 1
+
+Details of ClientHello:
+
+TLS Version: 1.0
+Random data: d53145bf8e3dc63fb0a95056598216c4eb3d6d76822b545f1ef7f
+SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
+Choosen cipher suites:
+0xe013 0xe011 
+Compresion method: 0
+Has extensions: false

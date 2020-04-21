@@ -77,6 +77,7 @@ typedef enum {
 	CERTIFICATE_VERIFY = 15,  // 0x0F
 	CLIENT_KEY_EXCHANGE = 16, // 0x10
 	FINISHED = 20,            // 0x14
+	ENCRYPTED_HANDSHAKE_MESSAGE = 99,
 
 } HandshakeType;
 
@@ -129,6 +130,8 @@ int parse_server_hello(FILE *fp, unsigned char *message, uint16_t size);
 void print_server_hello_message(FILE *fp, ServerHello *message, int extensions_length);
 void print_tls_version(FILE *fp, uint8_t minor);
 int parse_certificate(FILE* fp, uint16_t size);
+int parse_certificate_request(FILE* fp, uint16_t size);
+int parse_certificate_verify(FILE* fp, uint16_t size);
 int parse_server_key_exchange(FILE* fp, uint16_t size);
 int parse_server_hello_done(FILE* fp, uint16_t size);
 int parse_client_key_exchange(FILE* fp, unsigned char *message, uint16_t size);

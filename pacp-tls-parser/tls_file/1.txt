@@ -1,0 +1,71 @@
+--------Flow 1----------
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 47
+Handshake message type: 1
+
+Details of ClientHello:
+
+TLS Version: 1.0
+Random data: a755c0fa29c56b297eee12f8d1e2739b8ac2d8dd3fd3bce7447da7c
+SessionID: N/A
+Choosen cipher suites:
+0xe013 0xe011 
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 74
+Handshake message type: 2
+
+Details of ServerHello:
+
+TLS Version: 1.0
+Timestamp: Wed Apr  8 19:01:19 2020
+Random data: 8f9db870ea67e51e30ce85825267dfca8a4dbea45107a76d2383cd7
+SessionID: a5d8614b874d6d735bd58251f8cca55b5220d9a16cb421e3e6b27de33c33c
+Choosen cipher suite: 0xe013
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 1496
+Handshake message type: 11
+
+The certificate chain provided is 1492 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 77
+Handshake message type: 12
+
+The key exchange parameters provided are 73 bytes long.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 61
+Handshake message type: 13
+
+Certificate_Request.
+Server_Hello_Done.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 21
+Fragment length: 2
+
+Alert£¬level = 2,description = 40
