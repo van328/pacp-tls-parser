@@ -67,15 +67,16 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 
 	// Check if the sizes are correct (record protocol headers + length == file size)
 	if (tls_message->fLength + pos > size) {
-		printf("[debug]: not end :tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
-		return INVALID_FILE_LENGTH;
+		//printf("[debug]: not end :tls_message->fLength = %d , pos = %d, but size = %d\n", tls_message->fLength, pos, size); //fg
+		return NEED_MORE;
 	}
 	//sometimes there are few msgs in one tcp packet
 	if (tls_message->fLength + pos < size) {
 		(*nextSize) = size - (tls_message->fLength + pos);
 	}
 
-	if (tls_message->cType == HANDSHAKE && tls_message->fLength <= 40) {
+	//?
+	if (tls_message->cType == HANDSHAKE && tls_message->fLength <= 40) { 
 		tls_message->cType = ENCRYPTED_HANDSHAKE;
 	}
 
@@ -108,7 +109,9 @@ int initialize_tls_structure(unsigned char* raw, int size, HandshakeMessage* tls
 
 			}
 			else if (tls_message->fLength != tls_message->mLength + 4) {
-				return INVALID_FILE_LENGTH;
+				//return INVALID_FILE_LENGTH;
+				tls_message->hsType = ENCRYPTED_HANDSHAKE_MESSAGE;
+				tls_message->mLength = tls_message->fLength;
 			}
 		}
 		else {
@@ -656,6 +659,8 @@ void handle_errors(int error_code) {
 		printf("Unsupported handshake message type.\n"); break;
 	case 5: //INVALID_FILE_LENGTH_FOR_CLIENT_KEY_EXCHANGE
 		printf("The lengths specified in the input file are not valid for client_key_exchange message.\n"); break;
+	case 6: //NEED_MORE
+		printf("handle_errors: need more.\n"); break;
 	default:
 		printf("Something truly unexpected happend.\n"); break;
 	}
@@ -684,6 +689,8 @@ int handleTLSPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug) 
 	}*/
 
 	// Stop processing in case there was an error
+	if (err == NEED_MORE)
+		return err;
 	if (debug)
 		handle_errors(err);
 	if (err == INVALID_CONTENT_TYPE)

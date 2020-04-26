@@ -152,11 +152,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ipsec.h" />
     <ClInclude Include="pcap.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="tls.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ipsec.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pcap.cpp" />
     <ClCompile Include="pch.cpp">

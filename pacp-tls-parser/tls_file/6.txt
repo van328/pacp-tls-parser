@@ -1,52 +1,83 @@
---------Flow 6----------
+--------TCP Flow 6----------
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
+Version: 1.2
 Protocol type: 22
-Fragment length: 79
+Fragment length: 381
 Handshake message type: 1
 
 Details of ClientHello:
 
-TLS Version: 1.0
-Random data: f4ee425c735ad4ab24a83db75d243d043b8da2950f64cb912d5b57
-SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
+TLS Version: 1.2
+Random data: 9effc439b9ef9f446c7c8f2bce34776aab36d34db2f569969d63
+SessionID: N/A
 Choosen cipher suites:
-0xe013 0xe011 
+0xc02c 0xc02b 0xc030 0xc02f 0xc024 0xc023 0xc028 0xc027 0xc0a 0xc09 0xc014 0xc013 0x09d 0x09c 0x03d 0x03c 0x035 0x02f 0x0a 
 Compresion method: 0
-Has extensions: false
+Has extensions: true
+Raw extensions data:
+12a0001601400116c6976652e6b75616973686f752e636f6d0505100000a080601d0170180b02100d0140124151214353232261630230d0e657b6b63db51a44619190112ff54fa026c5b4a818389d795c2164f4c376b8a98a8045cb096795561736919bf23d41b64d780f69bafd61231942fc505ecd368ccc5cf3ae2559f65a5c5df936359814fb5ce8cf7108dc7257bd229597c8a958fc5ba3723671b9bfc3f37c702016d23e28cdfaeb1501be875683c228fee8612bdbaf7ab5d5244c64da8182abba9d3b957a85a44cf290f453cc68695f968a5fe358c75ff43ac1aaa649518a4da7278e9964a122a2b3dd643b497d9f6019cc49f45b1ab8384ebee683d7302ce78301700ff1010
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
+Version: 1.2
 Protocol type: 22
-Fragment length: 74
+Fragment length: 53
 Handshake message type: 2
 
 Details of ServerHello:
 
-TLS Version: 1.0
-Timestamp: Wed Apr  8 19:01:34 2020
-Random data: 418226d8aca384213922ee7efa8d9b09ab797c4bde1265fdf296c44
-SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
-Choosen cipher suite: 0xe013
+TLS Version: 1.2
+Timestamp: Fri Jun  6 08:41:20 2014
+Random data: 1ab7e5d68ae18a789a931aef1764061a3c1f8d719e948cb758e256
+SessionID: N/A
+Choosen cipher suite: 0x09c
 Compresion method: 0
-Has extensions: false
+Has extensions: true
+Raw extensions data:
+09ff101001700
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
+Version: 1.2
 Protocol type: 20
 Fragment length: 1
 
 parse_client_key_exchange£¬size:1.
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
-Protocol type: 22
-Fragment length: 80
-Handshake message type: 99
+Version: 1.2
+Protocol type: 99
+Fragment length: 40
 
-ENCRYPTED_HANDSHAKE_MESSAGE
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 20
+Fragment length: 1
+
+parse_client_key_exchange£¬size:1.
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 99
+Fragment length: 40
+
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 23
+Fragment length: 293
+
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 23
+Fragment length: 620
+

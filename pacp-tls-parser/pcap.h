@@ -21,7 +21,7 @@ typedef unsigned char mac_addr_t[6];
 #define MAX_NUM_PACKETS  1000000
 //#define MAX_FLOWS  100
 #define MAX_PACKET_SIZE 1600// 1024
-
+#define MAX_LOAD_SIZE 1400//1460// 1024
 //type
 
 
@@ -100,7 +100,7 @@ struct counters {
 	uint32 num_arp_pkts;
 };
 
-struct flow_s {
+struct tcp_flow_s {
 	uint32 flow_id;
 	uint32 src_ip;
 	uint32 dst_ip;
@@ -123,13 +123,35 @@ struct flow_s {
 	uint32 dst_seq_nums[MAX_NUM_PACKETS];
 	uint32 dst_ack_nums[MAX_NUM_PACKETS];
 	uint32 packets[MAX_NUM_PACKETS];
-	FILE* fd;
-	uint32 miss_len; //unused
+	//FILE* fd;
+	//uint32 miss_len; //unused
 	uint8 isgmtls;
 	uint8 istls;
-	uint64 gmtls_len;
-	uint64 tls_len;
-	struct flow_s *next;
+	struct tcp_flow_s *next;
+};
+
+struct ipSec_flow_s {
+	uint32 flow_id;
+	uint32 src_ip;
+	uint32 dst_ip;
+	uint32 num_pkts;
+	uint32 seq_num;
+	uint8 is_open;
+	uint32 num_bytes1; /* from initiator */
+	uint32 num_bytes2; /* from responder */
+	uint32 start_time; /* first syn */
+	uint32 end_time; /* fin_ack or ack */
+	uint8 closed;
+	uint32 num_init_pkts;
+	uint32 num_resp_pkts;
+	uint64 src_timestamps[MAX_NUM_PACKETS]; /* timestamps on pkts from initiator i.e. who sent first syn */
+	uint64 dst_timestamps[MAX_NUM_PACKETS]; /* timestamps on pkts from responder */
+	uint32 src_seq_nums[MAX_NUM_PACKETS];
+	uint32 src_ack_nums[MAX_NUM_PACKETS];
+	uint32 dst_seq_nums[MAX_NUM_PACKETS];
+	uint32 dst_ack_nums[MAX_NUM_PACKETS];
+	uint32 packets[MAX_NUM_PACKETS];
+	struct ipSec_flow_s* next;
 };
 
 struct ip_info_s {
@@ -142,7 +164,9 @@ struct ip_info_s {
 };
 
 
-
-
-
-int parse_pcap_file(const char *input_file, const char *output_info,  int debug);
+/*
+*
+*output_info1:tls
+*output_info2:ipsec 
+s*/
+int parse_pcap_file(const char *input_file, const char *output_info1, const char* output_info2, int debug);

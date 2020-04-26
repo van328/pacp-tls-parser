@@ -1,71 +1,83 @@
---------Flow 0----------
+--------TCP Flow 0----------
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
+Version: 1.2
 Protocol type: 22
-Fragment length: 47
+Fragment length: 381
 Handshake message type: 1
 
 Details of ClientHello:
 
-TLS Version: 1.0
-Random data: 93b4ea589f89322bc34d71d5ed1bc7b244cecabf2e2dcceec31f4458
+TLS Version: 1.2
+Random data: 9a8b4ba864c02fe8eaf77145f97f329c557b2fe1749a75d8fa5dd6
 SessionID: N/A
 Choosen cipher suites:
-0xe013 0xe011 
+0xc02c 0xc02b 0xc030 0xc02f 0xc024 0xc023 0xc028 0xc027 0xc0a 0xc09 0xc014 0xc013 0x09d 0x09c 0x03d 0x03c 0x035 0x02f 0x0a 
 Compresion method: 0
-Has extensions: false
+Has extensions: true
+Raw extensions data:
+12a0001601400116c6976652e6b75616973686f752e636f6d0505100000a080601d0170180b02100d0140124151214353232261630230d0e657b6b63db51a44619190112ff54fa026c5b4a818389d795c2164f4c376b8a98a8045cb096795561736919bf23d41b64d780f69bafd61231942fc505ecd368ccc5cf3ae2559f65a5c5df936359814fb5ce8cf7108dc7257bd229597c8a958fc5ba3723671b9bfc3f37c702016d23e28cdfaeb1501be875683c228fee8612bdbaf7ab5d5244c64da8182abba9d3b957a85a44cf290f453cc68695f968a5fe358c75ff43ac1aaa649518a4da7278e9964a122a2b3dd643b497d9f6019cc49f45b1ab8384ebee683d7302ce78301700ff1010
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
+Version: 1.2
 Protocol type: 22
-Fragment length: 74
+Fragment length: 53
 Handshake message type: 2
 
 Details of ServerHello:
 
-TLS Version: 1.0
-Timestamp: Wed Apr  8 19:01:19 2020
-Random data: 6ef41ddfec72f555ebb867f3768bc4417222a1c72fceb1022a979f
-SessionID: 10eb5c57963d1cf7a31f7665248ce0561bb56abcfde7285e88cdc7babe10dcee
-Choosen cipher suite: 0xe013
+TLS Version: 1.2
+Timestamp: Tue Mar 22 22:58:50 2050
+Random data: c81b26204474b6e0e39c19877ebcb53e72df88a17d3ce76240c531
+SessionID: N/A
+Choosen cipher suite: 0x09c
 Compresion method: 0
-Has extensions: false
+Has extensions: true
+Raw extensions data:
+09ff101001700
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
-Protocol type: 22
-Fragment length: 1496
-Handshake message type: 11
+Version: 1.2
+Protocol type: 20
+Fragment length: 1
 
-The certificate chain provided is 1492 bytes long.
+parse_client_key_exchange£¬size:1.
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
-Protocol type: 22
-Fragment length: 77
-Handshake message type: 12
+Version: 1.2
+Protocol type: 99
+Fragment length: 40
 
-The key exchange parameters provided are 73 bytes long.
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
-Protocol type: 22
-Fragment length: 61
-Handshake message type: 13
+Version: 1.2
+Protocol type: 20
+Fragment length: 1
 
-Certificate_Request.
-Server_Hello_Done.
+parse_client_key_exchange£¬size:1.
 ---------------------------------------
-Identified the following GMTLS message:
+Identified the following TLS message:
 
-Version: 1.0
-Protocol type: 21
-Fragment length: 2
+Version: 1.2
+Protocol type: 99
+Fragment length: 40
 
-Alert£¬level = 2,description = 40
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 23
+Fragment length: 293
+
+---------------------------------------
+Identified the following TLS message:
+
+Version: 1.2
+Protocol type: 23
+Fragment length: 620
+
