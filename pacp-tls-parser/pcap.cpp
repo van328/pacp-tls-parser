@@ -1,257 +1,58 @@
 #include "pch.h"
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 #include "pcap.h"
+#include "tls.h"
+#include "ipsec.h"
+#include "utils.h"
+#include "flow.h"
+
 #include <string>
 #include <iostream>
 
 using namespace std;
 
-uint8 packets[MAX_NUM_PACKETS][MAX_PACKET_SIZE];
-uint32 g_flow_id = 0;
-struct ip_info_s* ip_infos = NULL;
-uint32 num_ip_info_elements = 0;
-struct tcp_flow_s* list_of_flows = NULL;
-struct tcp_flow_s* table[MAX_HASH_LENGTH];
-struct tcp_flow_s* accroding_flow[MAX_NUM_PACKETS];
+uint8_t packets[MAX_NUM_PACKETS][MAX_PACKET_SIZE];
 struct counters cnt;
-char m_out_folder[10];
 
-struct ip_info_s*
-	find_ip(uint32 ip)
-{
-	struct ip_info_s* tmp;
+extern TCP_Flow* list_of_tcp_flows;
+extern TCP_Flow* tcp_flow_table[];
+extern IP_Flow* ipsec_flow_table[];
+extern TCP_Flow* accroding_flow[];
 
-	tmp = ip_infos;
-	while (tmp != NULL) {
-		if (ip == tmp->ip_addr) {
-			return (tmp);
-		}
-		tmp = tmp->next;
-	}
-	return (NULL);
-}
-void add_to_ip_list(struct ip_info_s* f)
-{
-	f->next = ip_infos;
-	ip_infos = f;
-	num_ip_info_elements++;
-}
-
-void get_output_file_name(int n, char* file_name) {
-	strcpy(file_name, m_out_folder);
-	char number[10];
-	_itoa(n, number, 10);
-	strcat(file_name, number);
-}
 
 int is_padding(int n, int pkt_len, int loadsize) {
+	if (loadsize > 30)
+		return 0;
 	for (int i = 0; i < 2 && i < loadsize; i++) {
 		int a = packets[n][sizeof(pcaprec_hdr_s) + pkt_len - loadsize + i];
 		if (a != 0)
 			return 0;
 	}
 	return 1;
-
-}
-
-void print_global_hdr(struct pcap_hdr_s* p_hdr)
-{
-	printf("magic number = %x\n", p_hdr->magic_number);
-	printf("version_major = %u\n", p_hdr->version_major);
-	printf("version_minor = %u\n", p_hdr->version_minor);
-	printf("thiszone = %d\n", p_hdr->thiszone);
-	printf("sigfigs = %u\n", p_hdr->sigfigs);
-	printf("snaplen = %u\n", p_hdr->snaplen);
-	printf("network = %u\n", p_hdr->network);
-	printf("\n");
-}
-
-
-void copy_bytes(void* _from, void* _to, int num)
-{
-	int i;
-	uint8* from = (uint8*)_from;
-	uint8* to = (uint8*)_to;
-
-	for (i = 0; i < num; i++) {
-		to[i] = from[i];
-	}
-#if 0
-	while (i < num)
-		*to = *from;
-	to = to + 1;
-	from = from + 1;
-	i++;
-#endif
-}
-
-void print_counters(struct counters* c)
-{
-	printf("number non ethernet = %u\n", c->non_eth);
-	printf("number of ip packets = %u\n", c->num_ip_pkts);
-	printf("num ipv6 packets = %u\n", c->num_ipv6_pkts);
-	printf("num arp packets = %u\n", c->num_arp_pkts);
-	printf("number icmp packets = %u\n", c->num_icmp_pkts);
-	printf("number udp packets = %u\n", c->num_udp_pkts);
-	printf("number tcp packets = %u\n", c->num_tcp_pkts);
-	printf("number non tcp udp or icmp packets %u\n", c->num_not_tcp_udp_icmp_pkts);
-}
-
-
-unsigned short _short_switcher(unsigned short* x)
-{
-	char* p;
-	char* p2;
-	char temp;
-
-	p = (char*)x;
-	p2 = p + 1;
-	temp = *p;
-	*p = *p2;
-	*p2 = temp;
-	return (*x);
-}
-
-unsigned int _int_switcher(unsigned int* x)
-{
-	char* b1;
-	char temp;
-
-	b1 = (char*)x;
-	temp = *b1;
-	*b1 = *(b1 + 3);
-	*(b1 + 3) = temp;
-
-	temp = *(b1 + 1);
-	*(b1 + 1) = *(b1 + 2);
-	*(b1 + 2) = temp;
-	return (*x);
-}
-
-
-
-
-void add_to_list(struct tcp_flow_s* f)
-{
-	f->next = list_of_flows;
-	list_of_flows = f;
-}
-
-struct tcp_flow_s*
-	find_flow1(uint32 src_ip, uint32 dst_ip, uint16 src_port, uint16 dst_port, uint32 seq_num)
-{
-	struct tcp_flow_s* tmp;
-	tmp = list_of_flows;
-
-	while (tmp != NULL) {
-		if (((tmp->src_ip == src_ip) && (tmp->dst_ip == dst_ip) &&
-			(tmp->src_port == src_port) && (tmp->dst_port == dst_port))
-			|| ((tmp->src_ip == dst_ip) && (tmp->dst_ip == src_ip) && (tmp->src_port == dst_port) &&
-				(tmp->dst_port == src_port))) {
-			return (tmp);
-		}
-		tmp = tmp->next;
-	}
-	return (NULL);
-}
-
-void
-conv_ip_to_str(char* str, uint32 ip)
-{
-	sprintf(str, "%u.%u.%u.%u",
-		(ip & 0xff000000) >> 24,
-		(ip & 0x00ff0000) >> 16,
-		(ip & 0x0000ff00) >> 8,
-		(ip & 0x000000ff));
-}
-
-void
-print_dotted_ips(uint32* ip)
-{
-	int tmp = 0;
-	tmp = (*ip & 0xff000000) >> 24;
-	printf("%d.", tmp);
-	tmp = (*ip & 0x00ff0000) >> 16;
-	printf("%d.", tmp);
-	tmp = (*ip & 0x0000ff00) >> 8;
-	printf("%d.", tmp);
-	tmp = (*ip & 0x000000ff);
-	printf("%d", tmp);
-}
-
-string
-return_dotted_ips(uint32* ip)
-{
-	string ret;
-	char retchar[5];
-	int tmp = 0;
-	tmp = (*ip & 0xff000000) >> 24;
-	sprintf(retchar, "%d.", tmp);
-	ret += retchar;
-	tmp = (*ip & 0x00ff0000) >> 16;
-	sprintf(retchar, "%d.", tmp);
-	ret += retchar;
-	tmp = (*ip & 0x0000ff00) >> 8;
-	sprintf(retchar, "%d.", tmp);
-	ret += retchar;
-	tmp = (*ip & 0x000000ff);
-	sprintf(retchar, "%d", tmp);
-	ret += retchar;
-	return ret;
 }
 
 void
 print_tcp_flow_hash_table()
 {
 	int i, j;
-	int counter = 0;
-	struct tcp_flow_s* tmp;
+	//int counter = 0;
+	TCP_Flow* tmp;
 
 	for (i = 0; i < MAX_HASH_LENGTH; i++) {
-		tmp = table[i];
+		tmp = tcp_flow_table[i];
 		while (tmp != NULL) {
-			/*if (tmp->fd)
-				fclose(tmp->fd);*/
-			counter++;
-			printf("\n-------------------------------------- ");
-			printf("TCP Flow %u-------------------------------------\n", tmp->flow_id);
-			printf("Pakets Number:");
-			for (j = 0; j < tmp->num_pkts; j++) {
-				printf(" %d ", tmp->packets[j] + 1);
-			}
-			printf(" \n");
-			printf("Source IP ");
-			print_dotted_ips(&tmp->src_ip);
-			printf("\n");
-			printf("Dst IP ");
-			print_dotted_ips(&tmp->dst_ip);
-			printf("\n");
-			printf("Source port %u\n", tmp->src_port);
-			printf("dst port %u\n", tmp->dst_port);
-			printf("num pkts %u\n", tmp->num_pkts);
-			printf("\n");
+
+			print_tcp_flows(tmp);
 
 			if (tmp->isgmtls || tmp->istls) {
-				/*char file_name[10];
-				_itoa(tmp->flow_id, file_name, 10);*/
-				char file_name[20];
-				get_output_file_name(tmp->flow_id, file_name);
-				//FILE* fd = fopen(file_name, "rb");
-				//if (fd == NULL) {
-				//	printf("Open tls data file fail£¡\n");//fg
-				//}
-				//uint8* buf = (uint8*)malloc(tmp->gmtls_len);
-				//int rc = fread(buf, 1, tmp->gmtls_len, fd);
-				//if (rc < 1) {
-				//	printf("could not read gmtls file\n");
-				//}
-				strcat(file_name, ".txt ");
+				char file_name[35];
+				get_output_file_name(file_name, tmp->m_flow_id, TCP_FLOW);
 				FILE* out_fd = fopen(file_name, "w");
 				if (out_fd == NULL) {
 					printf("Open txt file fail£¡\n");//fg
 				}
 				else {
-					fprintf(out_fd, "--------TCP Flow %u----------\n", tmp->flow_id);
+					fprintf(out_fd, "--------TCP Flow %u----------\n", tmp->m_flow_id);
 				}
 				struct pcaprec_hdr_s* pkt_hdr;
 				struct tcp_hdr_s tcp_hdr;
@@ -259,9 +60,9 @@ print_tcp_flow_hash_table()
 				int last_load_size = 0;
 				int err = 0;
 				int pkt_sqc_num;
-				uint8* buf = NULL;
-				for (j = 0; j < tmp->num_pkts; j++) {
-					pkt_sqc_num = tmp->packets[j];
+				uint8_t* buf = NULL;
+				for (j = 0; j < tmp->m_num_pkts; j++) {
+					pkt_sqc_num = tmp->m_packets[j];
 					pkt_hdr = (pcaprec_hdr_s*)packets[pkt_sqc_num];
 					copy_bytes(packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s), &tcp_hdr, sizeof(tcp_hdr));
 					_short_switcher(&tcp_hdr.ofs_ctrl);
@@ -278,12 +79,12 @@ print_tcp_flow_hash_table()
 						if (last_load_size > MIN_RECORD_LAYER_SIZE)
 						{
 							if (buf)
-								buf = (uint8*)realloc(buf, load_size + last_load_size);
+								buf = (uint8_t*)realloc(buf, load_size + last_load_size);
 							else
 								printf("err,buf == NULL!");
 						}
 						else {
-							buf = (uint8*)malloc(load_size);
+							buf = (uint8_t*)malloc(load_size);
 						}
 						memcpy(buf + last_load_size, packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(tcp_hdr_s), load_size);
 						/*if (load_size >= MAX_LOAD_SIZE) {
@@ -305,168 +106,97 @@ print_tcp_flow_hash_table()
 						free(buf);
 						buf = NULL;
 					}
-
 				}
-
-
-				fclose(out_fd);
+				if (out_fd)
+					fclose(out_fd);
 			}
-
-
-
-			tmp = tmp->next;
+			tmp = (TCP_Flow*)tmp->next;
 		}
 	}
 }
 
 void
-print_flows()
+print_ipsec_flow_hash_table()
 {
-	uint32 counter = 1;
-	while (list_of_flows != NULL) {
-		printf("-------------------------------------- ");
-		printf("Flow %u\n", counter);
-		printf("Source IP ");
-		print_dotted_ips(&list_of_flows->src_ip);
-		printf("\n");
-		printf("Dst IP ");
-		print_dotted_ips(&list_of_flows->dst_ip);
-		printf("\n");
-		printf("Source port %u\n", list_of_flows->src_port);
-		printf("dst port %u\n", list_of_flows->dst_port);
-		printf("num pkts %u\n", list_of_flows->num_pkts);
-		list_of_flows = list_of_flows->next;
-		counter++;
-	}
-}
+	int i, j;
+	//int counter = 0;
+	IP_Flow* tmp;
 
-// needs cleanup - different pcap files seem to have different timestamp resolution
-static void
-record_timestamp_and_seq_ack_nums(struct tcp_flow_s* flow, struct pcaprec_hdr_s* pkt_hdr,
-	struct ipv4_hdr_s* ip_hdr, struct tcp_hdr_s* tcp_hdr)
-{
-	if (ip_hdr->src_ip == flow->dst_ip) {
-		flow->dst_seq_nums[flow->num_pkts] = tcp_hdr->seq_num;
-		if ((tcp_hdr->ofs_ctrl & 0x10) == 0x10) {
-			flow->dst_ack_nums[flow->num_pkts] = tcp_hdr->ack_num;
+	for (i = 0; i < MAX_HASH_LENGTH; i++) {
+		tmp = ipsec_flow_table[i];
+		while (tmp != NULL) {
+			print_ipsec_flows(tmp);
+			char file_name[35];
+			get_output_file_name(file_name, tmp->m_flow_id, IP_FLOW);
+			FILE* out_fd = fopen(file_name, "w");
+			if (out_fd == NULL) {
+				printf("Open txt file fail£¡\n");//fg
+			}
+			else {
+				fprintf(out_fd, "--------IPSec Flow %u----------\n", tmp->m_flow_id);
+			}
+			struct pcaprec_hdr_s* pkt_hdr;
+			int load_size = 0;
+			int err = 0;
+			int pkt_sqc_num;
+			struct ipv4_hdr_s* ipv4_hdr;
+			uint8_t* buf = NULL;
+
+			for (j = 0; j < tmp->m_num_pkts; j++) {
+				pkt_sqc_num = tmp->m_packets[j];
+				pkt_hdr = (pcaprec_hdr_s*)packets[pkt_sqc_num];
+				ipv4_hdr = (ipv4_hdr_s*)(packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s));
+				if (ipv4_hdr->proto == 50) {//esp
+					load_size = pkt_hdr->incl_len - sizeof(ethernet_hdr_s) - sizeof(ipv4_hdr_s);
+					buf = (uint8_t*)malloc(load_size);
+					memcpy(buf, packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s), load_size);
+					err = handleESPPacket(buf, load_size, out_fd, 0);
+				}
+				else if (ipv4_hdr->proto == 17) { //udp
+
+					int b = sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s) + 17;
+					int isakmp_type = isakmp_version_type(packets[pkt_sqc_num][b]);
+					if (isakmp_type) {
+						int load_size = pkt_hdr->incl_len - sizeof(ethernet_hdr_s) - sizeof(ipv4_hdr_s) - sizeof(udp_hdr_s);
+						buf = (uint8_t*)malloc(load_size);
+						memcpy(buf, packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s), load_size);
+						err = handleISAKMPPacket(buf, load_size, out_fd, 0);
+					}
+				}
+				if (buf) {
+					free(buf);
+					buf = NULL;
+				}
+			}
+			if (out_fd)
+				fclose(out_fd);
+
+			tmp = (TCP_Flow*)tmp->next;
 		}
-		flow->dst_timestamps[flow->num_pkts] = (((uint64)pkt_hdr->ts_sec) * 1000000LL) + (uint64)pkt_hdr->ts_usec;
 	}
-	else {
-		flow->src_seq_nums[flow->num_pkts] = tcp_hdr->seq_num;
-		if ((tcp_hdr->ofs_ctrl & 0x10) == 0x10) {
-			flow->src_ack_nums[flow->num_pkts] = tcp_hdr->ack_num;
-		}
-
-		flow->src_timestamps[flow->num_pkts] = (uint64)pkt_hdr->ts_sec * 1000000;
-		if (pkt_hdr->ts_usec > 1000000) {
-			/* possibly nanosecond pcap file */
-			flow->src_timestamps[flow->num_pkts] += (pkt_hdr->ts_usec / 1000);
-		}
-		else {
-			flow->src_timestamps[flow->num_pkts] += pkt_hdr->ts_usec;
-		}
-	}
-}
-
-void add_to_hash_list(struct tcp_flow_s* f, struct tcp_flow_s** l)
-{
-	f->next = *l;
-	*l = f;
-}
-
-void add_to_hash_table(struct tcp_flow_s* flow)
-{
-	uint32 x, y, num;
-
-	x = (flow->src_ip) & 0x0000ffff;
-	y = (flow->dst_ip) & 0x0000ffff;
-	num = x + y;
-
-	flow->flow_id = g_flow_id++;
-	add_to_hash_list(flow, &table[num % MAX_HASH_LENGTH]);
-}
-
-int are_flows_equal(uint32 src_ip, uint32 dst_ip, struct tcp_flow_s* flow)
-{
-	if (((src_ip == flow->src_ip) && (dst_ip == flow->dst_ip)) || ((dst_ip == flow->src_ip) && (src_ip == flow->dst_ip))) {
-		return (1);
-	}
-	return(0);
-}
-
-int spec_flow(uint32 src_ip, uint32 dst_ip, uint16 src_port, uint16 dst_port, struct tcp_flow_s* tmp)
-{
-	if (((tmp->src_ip == src_ip) && (tmp->dst_ip == dst_ip) &&
-		(tmp->src_port == src_port) && (tmp->dst_port == dst_port))
-		|| ((tmp->src_ip == dst_ip) && (tmp->dst_ip == src_ip) && (tmp->src_port == dst_port) && (tmp->dst_port == src_port))) {
-		return(1);
-	}
-	return (0);
-}
-
-struct tcp_flow_s*
-	search_hash_list_to_edit(uint32 src_ip, uint32 dst_ip, uint16 src_port, uint16 dst_port)
-{
-	uint32 x = (src_ip) & 0x0000ffff;
-	uint32 y = (dst_ip) & 0x0000ffff;
-	uint32 num = x + y;
-
-	struct tcp_flow_s* tmp = table[num % MAX_HASH_LENGTH];
-
-	while (tmp != NULL) {
-		if (spec_flow(src_ip, dst_ip, src_port, dst_port, tmp)) {  // && (tmp->closed == 0)
-			return (tmp);
-		}
-		tmp = tmp->next;
-	}
-	return NULL;
-}
-
-//unused?
-struct tcp_flow_s*
-	search_hash_list(uint32 src_ip, uint32 dst_ip)
-{
-	uint32 x, y, num;
-	x = (src_ip) & 0x0000ffff;
-	y = (dst_ip) & 0x0000ffff;
-	num = x + y;
-
-	struct tcp_flow_s* hash_flow = table[num % MAX_HASH_LENGTH];
-	struct tcp_flow_s* tmp = hash_flow;
-	struct tcp_flow_s* return_list = NULL;
-	struct tcp_flow_s* tmp2 = NULL;
-
-	while (tmp != NULL) {
-		if (are_flows_equal(src_ip, dst_ip, tmp)) {
-			tmp2 = (struct tcp_flow_s*)malloc(sizeof(struct tcp_flow_s));
-			*tmp2 = *tmp;
-			add_to_hash_list(tmp2, &return_list);
-		}
-		tmp = tmp->next;
-	}
-	return (return_list);
 }
 
 
 int
-parse_pcap_file(const char* input_file, const char* output_folder1, const char* output_folder2, int debug)
+parse_pcap_file(const char* input_file, int debug)
 {
 	FILE* in_fd, * out_fd;
-	int n, rc, size_of_data;
+	int n, size_of_data;
+	size_t rc;
 	struct pcap_hdr_s global_hdr;
 	struct pcaprec_hdr_s pkt_hdr;
 	struct ethernet_hdr_s* eth_hdr;
 	struct ipv4_hdr_s* ip_hdr;
 	struct tcp_hdr_s tcp_hdr;
 	struct ip_info_s* ip_info;
-	struct tcp_flow_s* f;
-	uint8 dummy[16000];
-	uint32 extra_read;
+	struct udp_hdr_s udp_hdr;
+	struct icmp_hdr_s* icmp_hdr;
+	IP_Flow* ipsec_flow;
+	uint8_t dummy[16000];
+	uint32_t extra_read;
 	const char* packet_type;
 	string packet_addr;
-	//struct udp_hdr_s *udp_hdr; 
-	//struct icmp_hdr_s *icmp_hdr; 
+
 
 
 	memset(&cnt, 0, sizeof(cnt));
@@ -477,19 +207,20 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 		return -1;
 	}
 
-	strcpy(m_out_folder, output_folder1);
-
 	rc = fread(&global_hdr, sizeof(struct pcap_hdr_s), 1, in_fd);
 	if (rc < 1) {
 		printf("could not read global hdr\n");
 		return -2;
 	}
 
-	printf("------------------------------------------------------------------------------------ \n");
-	print_global_hdr(&global_hdr);
+	if (debug) {
+		printf("------------------------------------------------------------------------------------ \n");
+		print_global_hdr(&global_hdr);
+	}
 
 
-	memset(table, 0, sizeof(table));
+
+	//memset(table, 0, sizeof(table));
 
 	n = 0;
 	packet_type = "---";
@@ -593,19 +324,20 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 
 				ip_info->num_pkts_received++;
 				ip_info->num_bytes_received += size_of_data;
-				//NOTE: sometimes there are eth_padding in the end of the packet
-				int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(tcp_hdr);
-				if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
-					load_size = 0;
+
 
 				switch (ip_hdr->proto) {
 
 				case 6: /* TCP */
 				{
-
+					TCP_Flow* f;
 					cnt.num_tcp_pkts++;
 					packet_type = "TCP";
 					int tls_type = 0;
+					//NOTE: sometimes there are eth_padding in the end of the packet
+					int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(tcp_hdr);
+					if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
+						load_size = 0;
 
 					copy_bytes(packets[n] + sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr), &tcp_hdr, sizeof(tcp_hdr));
 
@@ -616,35 +348,37 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 					tcp_hdr.src_port = _short_switcher(&tcp_hdr.src_port);
 					tcp_hdr.dst_port = _short_switcher(&tcp_hdr.dst_port);
 
-					f = search_hash_list_to_edit(ip_hdr->src_ip, ip_hdr->dst_ip,
+					f = search_tcp_hash_list_to_edit(ip_hdr->src_ip, ip_hdr->dst_ip,
 						tcp_hdr.src_port, tcp_hdr.dst_port);
 
 					if ((tcp_hdr.ofs_ctrl & 0x02) == 0x02) {  //syn==1
 						/* syn + syn ack */
 						if (f == NULL || f->closed == 1) {    //f->closed ==1 ?
 							/* if f == NULL assume that this is first syn pkt */
-							f = (struct tcp_flow_s*)malloc(sizeof(struct tcp_flow_s));
-							f->src_ip = ip_hdr->src_ip;
-							f->dst_ip = ip_hdr->dst_ip;
+							f = new TCP_Flow;
+							f->init(ip_hdr->src_ip, ip_hdr->dst_ip, tcp_hdr.src_port, tcp_hdr.dst_port, tcp_hdr.seq_num);//(TCP_Flow*)malloc(sizeof(TCP_Flow));
+							/*f->m_src_ip = ip_hdr->src_ip;
+							f->m_dst_ip = ip_hdr->dst_ip;
 
-							f->src_port = 0;
-							f->dst_port = 0;
-							f->src_port = tcp_hdr.src_port;
-							f->dst_port = tcp_hdr.dst_port;
-							f->seq_num = tcp_hdr.seq_num;
-							f->num_pkts = 0;
-							f->packets[f->num_pkts] = n;
-							f->closed = 0;
+							f->m_src_port = 0;
+							f->m_dst_port = 0;
+							f->m_src_port = tcp_hdr.src_port;
+							f->m_dst_port = tcp_hdr.dst_port;*/
+							//f->m_seq_num = tcp_hdr.seq_num;
+							//f->m_num_pkts = 0;
+							//f->m_packets[f->m_num_pkts] = n;
+							f->add_packet(n);
+							/*f->closed = 0;
 							f->isgmtls = 0;
-							f->istls = 0;
+							f->istls = 0;*/
 							//f->miss_len = 0;  //todo
 
-							record_timestamp_and_seq_ack_nums(f, &pkt_hdr, ip_hdr, &tcp_hdr);
+							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
 
-							f->num_pkts++;
+							//f->m_num_pkts++;
 							f->next = NULL;
 
-							add_to_hash_table(f);
+							add_to_hash_table(f, TCP_FLOW);
 							cnt.num_tcp_flows++;
 
 							/*char file_name[20];
@@ -657,17 +391,18 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 							/* this could be retransmission of syn pkt */
 							/* or syn+ack */
 
-							f->packets[f->num_pkts] = n;
-							f->num_pkts++;
-
-							record_timestamp_and_seq_ack_nums(f, &pkt_hdr, ip_hdr, &tcp_hdr);
+							/*f->m_packets[f->m_num_pkts] = n;
+							f->m_num_pkts++;*/
+							f->add_packet(n);
+							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
 						}
 					} //ack=1
 					else if ((tcp_hdr.ofs_ctrl & 0x01) == 0x01) {  //fin==1
 						if (f != NULL) {
-							f->packets[f->num_pkts] = n;
-							f->num_pkts++;
-							record_timestamp_and_seq_ack_nums(f, &pkt_hdr, ip_hdr, &tcp_hdr);
+							/*f->m_packets[f->m_num_pkts] = n;
+							f->m_num_pkts++;*/
+							f->add_packet(n);
+							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
 							f->closed = 1;
 							/*if (f->fd)
 								fclose(f->fd);*/
@@ -675,9 +410,10 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 					}
 					else {
 						if (f != NULL) {
-							f->packets[f->num_pkts] = n;
-							f->num_pkts++;
-							record_timestamp_and_seq_ack_nums(f, &pkt_hdr, ip_hdr, &tcp_hdr);
+							/*f->m_packets[f->m_num_pkts] = n;
+							f->m_num_pkts++;*/
+							f->add_packet(n);
+							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
 						}
 
 						if (load_size > 0) {
@@ -714,20 +450,72 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 
 					break;
 				}
-				case 17:
+				case 17: { //udp
+
 					cnt.num_udp_pkts++;
 					packet_type = "UDP";
-					//copy_bytes(packet+sizeof(eth_hdr) + sizeof(ip_hdr), &udp_hdr, sizeof(udp_hdr));
-					break;
+					int isakmp_type = 0;
+					int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(udp_hdr_s);
+					if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
+						load_size = 0;
 
+					copy_bytes(packets[n] + sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr), &udp_hdr, sizeof(udp_hdr));
+
+					if (load_size > 18) {  //18?
+						int b = sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s) + 17;
+						isakmp_type = isakmp_version_type(packets[n][b]);
+						if (isakmp_type) {
+							cnt.num_isakmp_pkts++;
+							packet_type = "ISAKMP";
+
+							ipsec_flow = search_IP_hash_list(ip_hdr->src_ip, ip_hdr->dst_ip);
+							if (ipsec_flow == NULL) {
+								ipsec_flow = new IP_Flow;
+								ipsec_flow->init(ip_hdr->src_ip, ip_hdr->dst_ip);
+
+								ipsec_flow->add_packet(n);
+								ipsec_flow->next = NULL;
+
+								add_to_hash_table(ipsec_flow, IP_FLOW);
+								cnt.num_ipsec_flows++;
+							}
+							else {
+								ipsec_flow->add_packet(n);
+							}
+						}
+
+					}
+
+
+					break;
+				}
 				case 1:
 					cnt.num_icmp_pkts++;
 					packet_type = "ICMP";
 					//copy_bytes(packet+sizeof(eth_hdr) + sizeof(ip_hdr), &icmp_hdr, sizeof(icmp_hdr));
 					break;
+				case 50:
+					cnt.num_esp_pkts++;
+					packet_type = "ESP";
 
+					ipsec_flow = search_IP_hash_list(ip_hdr->src_ip, ip_hdr->dst_ip);
+					if (ipsec_flow == NULL) {
+						ipsec_flow = new IP_Flow;
+						ipsec_flow->init(ip_hdr->src_ip, ip_hdr->dst_ip);
+
+						ipsec_flow->add_packet(n);
+						ipsec_flow->next = NULL;
+
+						add_to_hash_table(ipsec_flow, IP_FLOW);
+						cnt.num_ipsec_flows++;
+					}
+					else {
+						ipsec_flow->add_packet(n);
+					}
+
+					break;
 				default:
-					cnt.num_not_tcp_udp_icmp_pkts++;
+					cnt.num_not_tcp_udp_icmp_esp_pkts++;
 
 				}
 
@@ -756,7 +544,7 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 
 	}
 
-	if (debug) {
+	if (1) {
 		printf("\nSummary:\n");
 		printf("num pkts read = %d\n", n);
 		print_counters(&cnt);
@@ -764,9 +552,15 @@ parse_pcap_file(const char* input_file, const char* output_folder1, const char* 
 
 	fclose(in_fd);
 
-
-	printf("\nPrinting hash table...\n");
-	print_tcp_flow_hash_table();
-	printf("------------------------------------------------------------------------------------\n");
+	if (debug) {
+		printf("------------------------------------------------------------------------------------\n");
+		printf("\nPrinting tcp hash table...\n");
+		print_tcp_flow_hash_table();
+		printf("------------------------------------------------------------------------------------\n");
+		printf("\nPrinting ipsec hash table...\n");
+		print_ipsec_flow_hash_table();
+		printf("------------------------------------------------------------------------------------\n");
+	}
+	
 	return 0;
 }

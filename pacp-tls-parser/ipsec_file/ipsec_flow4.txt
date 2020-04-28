@@ -1,0 +1,49 @@
+--------IPSec Flow 4----------
+---------------------------------------
+ISAKMP packet:
+init_spi: 315884612
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 315884612
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 315884612
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 315884612
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 420145171
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 420145171
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 420145171
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 420145171
+resp_spi: 0
+version: 1.0
+exchange type: 0

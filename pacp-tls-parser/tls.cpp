@@ -1,9 +1,9 @@
 #include "pch.h"
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 #include "tls.h"
-#include "stdarg.h"
+//#include "utils.h"
+#include <stdarg.h>
 
-//#define info_printf(a,b,c) printf(b,c)
 
 
 void info_printf(FILE* fp, const char* format, ...)

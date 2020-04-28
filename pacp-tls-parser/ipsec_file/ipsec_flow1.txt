@@ -1,0 +1,37 @@
+--------IPSec Flow 1----------
+---------------------------------------
+ISAKMP packet:
+init_spi: 1153218750
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 1493932496
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 1493932496
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 1493932496
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 1493932496
+resp_spi: 0
+version: 1.0
+exchange type: 0
+---------------------------------------
+ISAKMP packet:
+init_spi: 2851866506
+resp_spi: 0
+version: 1.0
+exchange type: 0

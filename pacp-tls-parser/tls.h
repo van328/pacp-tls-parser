@@ -119,6 +119,8 @@ typedef struct { } ServerKeyExchange; // Contains KeyExchangeAlgorithm parameter
 typedef struct { } ClientKeyExchange; // Contains either a PreMasterSecret or DH Client Parameters like (key) and is not subject of parsing
 typedef struct { } ServerHelloDone;   // This message contains nothing, it's defined just for the sake of complentness
 
+void info_printf(FILE* fp, const char* format, ...);
+
 int initialize_tls_structure(unsigned char *raw, int size, HandshakeMessage *tls_message, HandshakeMessage* tls_message2,  int *nextSizef);
 void print_tls_record_layer_info(FILE *fp, HandshakeMessage *tls_message);//fg
 
