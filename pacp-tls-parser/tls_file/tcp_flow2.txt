@@ -1,4 +1,4 @@
---------TCP Flow 1----------
+--------TCP Flow 2----------
 ---------------------------------------
 Identified the following GMTLS message:
 
@@ -10,7 +10,7 @@ Handshake message type: 1
 Details of ClientHello:
 
 TLS Version: 1.0
-Random data: a755c0fa29c56b297eee12f8d1e2739b8ac2d8dd3fd3bce7447da7c
+Random data: eda3ace92fc98c26318c5a3515f924381cd7ba65502ce3c0f6b333
 SessionID: N/A
 Choosen cipher suites:
 0xe013 0xe011 
@@ -28,8 +28,8 @@ Details of ServerHello:
 
 TLS Version: 1.0
 Timestamp: Wed Apr  8 19:01:19 2020
-Random data: 8f9db870ea67e51e30ce85825267dfca8a4dbea45107a76d2383cd7
-SessionID: a5d8614b874d6d735bd58251f8cca55b5220d9a16cb421e3e6b27de33c33c
+Random data: d2374c9a945daba67326415139e3f1751e5434cfd62c383b768050
+SessionID: 69d2d6c4eb7591f2b0a8c2421a35501b48f654a853d4dc914228d9b0a034505e
 Choosen cipher suite: 0xe013
 Compresion method: 0
 Has extensions: false
@@ -45,8 +45,8 @@ Details of ServerHello:
 
 TLS Version: 1.0
 Timestamp: Wed Apr  8 19:01:19 2020
-Random data: 8f9db870ea67e51e30ce85825267dfca8a4dbea45107a76d2383cd7
-SessionID: a5d8614b874d6d735bd58251f8cca55b5220d9a16cb421e3e6b27de33c33c
+Random data: d2374c9a945daba67326415139e3f1751e5434cfd62c383b768050
+SessionID: 69d2d6c4eb7591f2b0a8c2421a35501b48f654a853d4dc914228d9b0a034505e
 Choosen cipher suite: 0xe013
 Compresion method: 0
 Has extensions: false

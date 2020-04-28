@@ -14,5 +14,5 @@ const char* output_folder2 = "./ipsec_file/";
 
 int main(int argc, char *argv[])
 {
-	parse_pcap_file(input_file,1);
+	parse_pcap_file(input_file,0);
 }

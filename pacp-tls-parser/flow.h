@@ -130,10 +130,10 @@ private:
 #define TCP_FLOW 1
 
 
-uint32_t g_tcp_flow_id = 0;
+uint32_t g_tls_flow_id = 0;
 uint32_t g_ipsec_flow_id = 0;
 TCP_Flow* list_of_tcp_flows = NULL;
-TCP_Flow* tcp_flow_table[MAX_HASH_LENGTH];
+TCP_Flow* tls_flow_table[MAX_HASH_LENGTH];
 IP_Flow* ipsec_flow_table[MAX_HASH_LENGTH];
 TCP_Flow* accroding_flow[MAX_NUM_PACKETS];
 
@@ -167,8 +167,8 @@ void add_to_hash_table(IP_Flow* flow, int flow_type)
 		add_to_hash_list(flow, &ipsec_flow_table[num % MAX_HASH_LENGTH]);
 	}
 	else if (flow_type == TCP_FLOW) {
-		flow->m_flow_id = g_tcp_flow_id++;
-		add_to_hash_list(flow, (IP_Flow**)&tcp_flow_table[num % MAX_HASH_LENGTH]);
+		flow->m_flow_id = g_tls_flow_id++;
+		add_to_hash_list(flow, (IP_Flow**)&tls_flow_table[num % MAX_HASH_LENGTH]);
 	}
 	else {
 		printf("err: wrong flow type!");
@@ -213,7 +213,7 @@ search_tcp_hash_list_to_edit(uint32_t src_ip, uint32_t dst_ip, uint16_t src_port
 	uint32_t y = (dst_ip) & 0x0000ffff;
 	uint32_t num = x + y;
 
-	TCP_Flow* tmp = tcp_flow_table[num % MAX_HASH_LENGTH];
+	TCP_Flow* tmp = tls_flow_table[num % MAX_HASH_LENGTH];
 
 	while (tmp != NULL) {
 		if (spec_tcp_flow(src_ip, dst_ip, src_port, dst_port, tmp)) {  // && (tmp->closed == 0)

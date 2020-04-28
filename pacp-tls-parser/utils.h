@@ -119,7 +119,7 @@ void print_counters(struct counters* c)
 	printf("number isakmp packets %u\n", c->num_isakmp_pkts);
 	printf("number non tcp udp or icmp packets %u\n", c->num_not_tcp_udp_icmp_esp_pkts);
 	printf("\nnumber ipsec flows = %u\n", c->num_ipsec_flows);
-	printf("number tcp flows = %u\n", c->num_tcp_flows);
+	printf("number tls flows = %u\n", c->num_tls_flows);
 }
 
 

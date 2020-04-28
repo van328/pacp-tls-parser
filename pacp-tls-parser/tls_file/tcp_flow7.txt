@@ -1,0 +1,1126 @@
+--------TCP Flow 7----------
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 79
+Handshake message type: 1
+
+Details of ClientHello:
+
+TLS Version: 1.0
+Random data: d53145bf8e3dc63fb0a95056598216c4eb3d6d76822b545f1ef7f
+SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
+Choosen cipher suites:
+0xe013 0xe011 
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 74
+Handshake message type: 2
+
+Details of ServerHello:
+
+TLS Version: 1.0
+Timestamp: Wed Apr  8 19:01:34 2020
+Random data: 9ef321cedbe21329bc56c1ef25a1c4359d321d2226e931114b481836
+SessionID: 6a87bdc8b0eb8aa1e4ef99576dceb497223bcf4cbf66b1dba233cf7106a07f
+Choosen cipher suite: 0xe013
+Compresion method: 0
+Has extensions: false
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 20
+Fragment length: 1
+
+parse_client_key_exchange£¬size:1.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 80
+Handshake message type: 99
+
+ENCRYPTED_HANDSHAKE_MESSAGE
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 20
+Fragment length: 1
+
+parse_client_key_exchange£¬size:1.
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 22
+Fragment length: 80
+Handshake message type: 99
+
+ENCRYPTED_HANDSHAKE_MESSAGE
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 560
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 2976
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 15072
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 528
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 7600
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16112
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 6560
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 528
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 16352
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 10464
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 544
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 14400
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 528
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1584
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 6416
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 496
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 1728
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 576
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 864
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 576
+
+---------------------------------------
+Identified the following GMTLS message:
+
+Version: 1.0
+Protocol type: 23
+Fragment length: 864
+

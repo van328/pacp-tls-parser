@@ -15,7 +15,7 @@ uint8_t packets[MAX_NUM_PACKETS][MAX_PACKET_SIZE];
 struct counters cnt;
 
 extern TCP_Flow* list_of_tcp_flows;
-extern TCP_Flow* tcp_flow_table[];
+extern TCP_Flow* tls_flow_table[];
 extern IP_Flow* ipsec_flow_table[];
 extern TCP_Flow* accroding_flow[];
 
@@ -32,14 +32,14 @@ int is_padding(int n, int pkt_len, int loadsize) {
 }
 
 void
-print_tcp_flow_hash_table()
+print_tls_flow_hash_table()
 {
 	int i, j;
 	//int counter = 0;
 	TCP_Flow* tmp;
 
 	for (i = 0; i < MAX_HASH_LENGTH; i++) {
-		tmp = tcp_flow_table[i];
+		tmp = tls_flow_table[i];
 		while (tmp != NULL) {
 
 			print_tcp_flows(tmp);
@@ -218,10 +218,6 @@ parse_pcap_file(const char* input_file, int debug)
 		print_global_hdr(&global_hdr);
 	}
 
-
-
-	//memset(table, 0, sizeof(table));
-
 	n = 0;
 	packet_type = "---";
 	packet_addr = "";
@@ -351,88 +347,41 @@ parse_pcap_file(const char* input_file, int debug)
 					f = search_tcp_hash_list_to_edit(ip_hdr->src_ip, ip_hdr->dst_ip,
 						tcp_hdr.src_port, tcp_hdr.dst_port);
 
-					if ((tcp_hdr.ofs_ctrl & 0x02) == 0x02) {  //syn==1
-						/* syn + syn ack */
-						if (f == NULL || f->closed == 1) {    //f->closed ==1 ?
-							/* if f == NULL assume that this is first syn pkt */
-							f = new TCP_Flow;
-							f->init(ip_hdr->src_ip, ip_hdr->dst_ip, tcp_hdr.src_port, tcp_hdr.dst_port, tcp_hdr.seq_num);//(TCP_Flow*)malloc(sizeof(TCP_Flow));
-							/*f->m_src_ip = ip_hdr->src_ip;
-							f->m_dst_ip = ip_hdr->dst_ip;
-
-							f->m_src_port = 0;
-							f->m_dst_port = 0;
-							f->m_src_port = tcp_hdr.src_port;
-							f->m_dst_port = tcp_hdr.dst_port;*/
-							//f->m_seq_num = tcp_hdr.seq_num;
-							//f->m_num_pkts = 0;
-							//f->m_packets[f->m_num_pkts] = n;
-							f->add_packet(n);
-							/*f->closed = 0;
-							f->isgmtls = 0;
-							f->istls = 0;*/
-							//f->miss_len = 0;  //todo
-
-							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
-
-							//f->m_num_pkts++;
-							f->next = NULL;
-
-							add_to_hash_table(f, TCP_FLOW);
-							cnt.num_tcp_flows++;
-
-							/*char file_name[20];
-							get_output_file_name(f->flow_id, file_name);
-							f->fd = fopen(file_name, "wb");
-							if (f->fd == NULL)
-								printf("err:open output file fail!");*/
-						}
-						else {
-							/* this could be retransmission of syn pkt */
-							/* or syn+ack */
-
-							/*f->m_packets[f->m_num_pkts] = n;
-							f->m_num_pkts++;*/
-							f->add_packet(n);
-							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
-						}
-					} //ack=1
-					else if ((tcp_hdr.ofs_ctrl & 0x01) == 0x01) {  //fin==1
+					//if ((tcp_hdr.ofs_ctrl & 0x02) == 0x02) {  //syn==1
+					//	/* syn + syn ack */
+					//	if (f == NULL || f->closed == 1) {    //f->closed ==1 ?
+					//		/* if f == NULL assume that this is first syn pkt */
+					//		//f = new TCP_Flow;
+					//		//f->init(ip_hdr->src_ip, ip_hdr->dst_ip, tcp_hdr.src_port, tcp_hdr.dst_port, tcp_hdr.seq_num);//(TCP_Flow*)malloc(sizeof(TCP_Flow));
+					//		//f->add_packet(n);
+					//		//f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
+					//		//f->next = NULL;
+					//		//add_to_hash_table(f, TCP_FLOW);
+					//		//cnt.num_tcp_flows++;
+					//	}
+					//	else {
+					//		f->add_packet(n);
+					//		f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
+					//	}
+					//} //ack=1
+					//else if ((tcp_hdr.ofs_ctrl & 0x01) == 0x01) {  //fin==1
+					//	if (f != NULL) {
+					//		f->add_packet(n);
+					//		f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
+					//		f->closed = 1;
+					//	}
+					//}
+					//else
+					{
 						if (f != NULL) {
-							/*f->m_packets[f->m_num_pkts] = n;
-							f->m_num_pkts++;*/
-							f->add_packet(n);
-							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
-							f->closed = 1;
-							/*if (f->fd)
-								fclose(f->fd);*/
-						}
-					}
-					else {
-						if (f != NULL) {
-							/*f->m_packets[f->m_num_pkts] = n;
-							f->m_num_pkts++;*/
 							f->add_packet(n);
 							f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
 						}
-
 						if (load_size > 0) {
 							//memcpy(buf, packets[n] + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(tcp_hdr), load_size);
 							if (load_size > MIN_RECORD_LAYER_SIZE) {
-
 								tls_type = tls_version_type(packets[n][1 + sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(tcp_hdr)], packets[n][2 + sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(tcp_hdr)]);  //只要第一个判断出来就行了 //todo...
-								if (f == NULL) {
-									printf("error:load_size > MIN_RECORD_LAYER_SIZE, but f == NULL\n");
-								}
-								else {
-									/*if (n == 98)   //debug
-										int a = 0;*/
-									if (f->isgmtls == 0 && tls_type == GMTLS)
-										f->isgmtls = 1;//										
-
-									if (f->istls == 0 && tls_type == TLS)
-										f->istls = 1;
-
+								if (f != NULL) {
 									if (f->isgmtls == 1) {
 										packet_type = "GMTLS";
 										accroding_flow[n] = f;
@@ -442,11 +391,52 @@ parse_pcap_file(const char* input_file, int debug)
 										accroding_flow[n] = f;
 									}
 								}
+								else {
+									if (tls_type == GMTLS || tls_type == TLS) {
+										f = new TCP_Flow;
+										f->init(ip_hdr->src_ip, ip_hdr->dst_ip, tcp_hdr.src_port, tcp_hdr.dst_port, tcp_hdr.seq_num);//(TCP_Flow*)malloc(sizeof(TCP_Flow));
+										f->add_packet(n);
+										f->record_timestamp_and_seq_ack_nums(&pkt_hdr, ip_hdr, &tcp_hdr);
+										f->next = NULL;
+										add_to_hash_table(f, TCP_FLOW);
+										cnt.num_tls_flows++;
+
+										if (f->isgmtls == 0 && tls_type == GMTLS) {
+											f->isgmtls = 1;		
+											packet_type = "GMTLS";
+											accroding_flow[n] = f;
+										}
+
+
+										if (f->istls == 0 && tls_type == TLS) {
+											f->istls = 1;
+											packet_type = "TLS";
+											accroding_flow[n] = f;
+										}
+										
+									}
+									//printf("error:load_size > MIN_RECORD_LAYER_SIZE, but f == NULL\n");
+								}
+								//else {
+
+								//	//if (f->isgmtls == 0 && tls_type == GMTLS)
+								//	//	f->isgmtls = 1;//										
+
+								//	//if (f->istls == 0 && tls_type == TLS)
+								//	//	f->istls = 1;
+
+								/*if (f->isgmtls == 1) {
+									packet_type = "GMTLS";
+									accroding_flow[n] = f;
+								}
+								if (f->istls == 1) {
+									packet_type = "TLS";
+									accroding_flow[n] = f;
+								}*/
+								//}
 							}
 						}
 					}
-
-
 
 					break;
 				}
@@ -483,9 +473,7 @@ parse_pcap_file(const char* input_file, int debug)
 								ipsec_flow->add_packet(n);
 							}
 						}
-
 					}
-
 
 					break;
 				}
@@ -493,6 +481,7 @@ parse_pcap_file(const char* input_file, int debug)
 					cnt.num_icmp_pkts++;
 					packet_type = "ICMP";
 					//copy_bytes(packet+sizeof(eth_hdr) + sizeof(ip_hdr), &icmp_hdr, sizeof(icmp_hdr));
+
 					break;
 				case 50:
 					cnt.num_esp_pkts++;
@@ -518,7 +507,6 @@ parse_pcap_file(const char* input_file, int debug)
 					cnt.num_not_tcp_udp_icmp_esp_pkts++;
 
 				}
-
 			}
 			else if (eth_hdr->type_length == 0x86dd) {
 				cnt.num_ipv6_pkts++;
@@ -535,13 +523,10 @@ parse_pcap_file(const char* input_file, int debug)
 
 		n++;
 		if (debug) {
-
 			printf("%d %s ", n, packet_type);
 			cout << packet_addr;
 			printf("\n");
-
 		}
-
 	}
 
 	if (1) {
@@ -555,12 +540,12 @@ parse_pcap_file(const char* input_file, int debug)
 	if (debug) {
 		printf("------------------------------------------------------------------------------------\n");
 		printf("\nPrinting tcp hash table...\n");
-		print_tcp_flow_hash_table();
+		print_tls_flow_hash_table();
 		printf("------------------------------------------------------------------------------------\n");
 		printf("\nPrinting ipsec hash table...\n");
 		print_ipsec_flow_hash_table();
 		printf("------------------------------------------------------------------------------------\n");
 	}
-	
+
 	return 0;
 }

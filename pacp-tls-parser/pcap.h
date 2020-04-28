@@ -85,7 +85,7 @@ struct icmp_hdr_s {
 
 
 struct counters {
-	uint32_t num_tcp_flows;
+	uint32_t num_tls_flows;
 	uint32_t num_ipsec_flows;
 	uint32_t non_eth;
 	uint32_t num_ip_pkts;
@@ -101,7 +101,7 @@ struct counters {
 	
 };
 
-//struct tcp_flow_s {
+//struct tls_flow_s {
 //	uint32_t flow_id;
 //	uint32_t src_ip;
 //	uint32_t dst_ip;
@@ -128,7 +128,7 @@ struct counters {
 //	//uint32_t miss_len; //unused
 //	uint8_t isgmtls;
 //	uint8_t istls;
-//	struct tcp_flow_s *next;
+//	struct tls_flow_s *next;
 //};
 
 
