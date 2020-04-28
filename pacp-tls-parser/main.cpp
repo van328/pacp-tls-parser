@@ -7,12 +7,12 @@
 //#define _CRT_SECURE_NO_WARNINGS
 
 
-const char* input_file = "./pcap_file/111.pcap";
+const char* input_file = "./pcap_file/20110615.pcap";
 const char* output_folder1 = "./tls_file/";
 const char* output_folder2 = "./ipsec_file/";
 
 
 int main(int argc, char *argv[])
 {
-	parse_pcap_file(input_file,0);
+	parse_pcap_file(input_file,1);
 }

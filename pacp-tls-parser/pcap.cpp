@@ -14,10 +14,17 @@ using namespace std;
 uint8_t packets[MAX_NUM_PACKETS][MAX_PACKET_SIZE];
 struct counters cnt;
 
-extern TCP_Flow* list_of_tcp_flows;
-extern TCP_Flow* tls_flow_table[];
-extern IP_Flow* ipsec_flow_table[];
-extern TCP_Flow* accroding_flow[];
+//extern TCP_Flow* list_of_tcp_flows;
+//extern TCP_Flow* tls_flow_table[];
+//extern IP_Flow* ipsec_flow_table[];
+//extern TCP_Flow* accroding_flow[];
+
+uint32_t g_tls_flow_id = 0;
+uint32_t g_ipsec_flow_id = 0;
+TCP_Flow* list_of_tcp_flows = NULL;
+TCP_Flow* tls_flow_table[MAX_HASH_LENGTH];
+IP_Flow* ipsec_flow_table[MAX_HASH_LENGTH];
+TCP_Flow* accroding_flow[MAX_NUM_PACKETS];
 
 
 int is_padding(int n, int pkt_len, int loadsize) {
@@ -32,7 +39,7 @@ int is_padding(int n, int pkt_len, int loadsize) {
 }
 
 void
-print_tls_flow_hash_table()
+print_tls_flow_hash_table(int debug)
 {
 	int i, j;
 	//int counter = 0;
@@ -41,8 +48,8 @@ print_tls_flow_hash_table()
 	for (i = 0; i < MAX_HASH_LENGTH; i++) {
 		tmp = tls_flow_table[i];
 		while (tmp != NULL) {
-
-			print_tcp_flows(tmp);
+			if (debug)
+				print_tcp_flows(tmp);
 
 			if (tmp->isgmtls || tmp->istls) {
 				char file_name[35];
@@ -116,7 +123,7 @@ print_tls_flow_hash_table()
 }
 
 void
-print_ipsec_flow_hash_table()
+print_ipsec_flow_hash_table(int debug)
 {
 	int i, j;
 	//int counter = 0;
@@ -125,7 +132,8 @@ print_ipsec_flow_hash_table()
 	for (i = 0; i < MAX_HASH_LENGTH; i++) {
 		tmp = ipsec_flow_table[i];
 		while (tmp != NULL) {
-			print_ipsec_flows(tmp);
+			if (debug)
+				print_ipsec_flows(tmp);
 			char file_name[35];
 			get_output_file_name(file_name, tmp->m_flow_id, IP_FLOW);
 			FILE* out_fd = fopen(file_name, "w");
@@ -141,7 +149,8 @@ print_ipsec_flow_hash_table()
 			int pkt_sqc_num;
 			struct ipv4_hdr_s* ipv4_hdr;
 			uint8_t* buf = NULL;
-
+			int four_head_len = sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s);
+			int three_head_len = sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s);
 			for (j = 0; j < tmp->m_num_pkts; j++) {
 				pkt_sqc_num = tmp->m_packets[j];
 				pkt_hdr = (pcaprec_hdr_s*)packets[pkt_sqc_num];
@@ -149,19 +158,54 @@ print_ipsec_flow_hash_table()
 				if (ipv4_hdr->proto == 50) {//esp
 					load_size = pkt_hdr->incl_len - sizeof(ethernet_hdr_s) - sizeof(ipv4_hdr_s);
 					buf = (uint8_t*)malloc(load_size);
-					memcpy(buf, packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s), load_size);
+					memcpy(buf, packets[pkt_sqc_num] + three_head_len, load_size);
 					err = handleESPPacket(buf, load_size, out_fd, 0);
 				}
 				else if (ipv4_hdr->proto == 17) { //udp
+					udp_hdr_s udp_hdr;
+					
+					copy_bytes(packets[pkt_sqc_num] + three_head_len, &udp_hdr, sizeof(udp_hdr));
 
-					int b = sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s) + 17;
-					int isakmp_type = isakmp_version_type(packets[pkt_sqc_num][b]);
-					if (isakmp_type) {
-						int load_size = pkt_hdr->incl_len - sizeof(ethernet_hdr_s) - sizeof(ipv4_hdr_s) - sizeof(udp_hdr_s);
-						buf = (uint8_t*)malloc(load_size);
-						memcpy(buf, packets[pkt_sqc_num] + sizeof(pcaprec_hdr_s) + sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s), load_size);
-						err = handleISAKMPPacket(buf, load_size, out_fd, 0);
+					udp_hdr.src_port = _short_switcher(&udp_hdr.src_port);
+					udp_hdr.dst_port = _short_switcher(&udp_hdr.dst_port);
+					
+					//int ike = 0;
+					if (udp_hdr.src_port == 500 || udp_hdr.dst_port == 500) {
+						int isakmp_type = isakmp_version_type(packets[pkt_sqc_num][four_head_len+17]);
+						if (isakmp_type) {
+							int load_size = pkt_hdr->incl_len - (sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s));
+							buf = (uint8_t*)malloc(load_size);
+							memcpy(buf, packets[pkt_sqc_num] + four_head_len, load_size);
+							err = handleISAKMPPacket(buf, load_size, out_fd, 0);
+						}
+						else
+							printf("err:cport=500,but not isakmp! n=%d", pkt_sqc_num + 1);
+							
 					}
+					else if (udp_hdr.src_port == 4500 || udp_hdr.dst_port == 4500) {
+						if( (int)packets[pkt_sqc_num][four_head_len] == 0 ){
+							int isakmp_type = isakmp_version_type(packets[pkt_sqc_num][four_head_len + 4 + 17]);
+							if (isakmp_type) {
+								int load_size = pkt_hdr->incl_len - (sizeof(ethernet_hdr_s) + sizeof(ipv4_hdr_s) + sizeof(udp_hdr_s)) - 4;
+								buf = (uint8_t*)malloc(load_size);
+								memcpy(buf, packets[pkt_sqc_num] + four_head_len + 4, load_size);
+								err = handleISAKMPPacket(buf, load_size, out_fd, 0);
+							}
+							else
+								printf("err:cport=4500,with 0000,but not isakmp! n=%d", pkt_sqc_num + 1);
+
+						}
+						else {
+							load_size = pkt_hdr->incl_len - three_head_len;
+							buf = (uint8_t*)malloc(load_size);
+							memcpy(buf, packets[pkt_sqc_num] + four_head_len, load_size);
+							err = handleESPPacket(buf, load_size, out_fd, 0);
+						}
+						
+
+					}
+					
+					
 				}
 				if (buf) {
 					free(buf);
@@ -402,7 +446,7 @@ parse_pcap_file(const char* input_file, int debug)
 										cnt.num_tls_flows++;
 
 										if (f->isgmtls == 0 && tls_type == GMTLS) {
-											f->isgmtls = 1;		
+											f->isgmtls = 1;
 											packet_type = "GMTLS";
 											accroding_flow[n] = f;
 										}
@@ -413,7 +457,7 @@ parse_pcap_file(const char* input_file, int debug)
 											packet_type = "TLS";
 											accroding_flow[n] = f;
 										}
-										
+
 									}
 									//printf("error:load_size > MIN_RECORD_LAYER_SIZE, but f == NULL\n");
 								}
@@ -445,15 +489,17 @@ parse_pcap_file(const char* input_file, int debug)
 					cnt.num_udp_pkts++;
 					packet_type = "UDP";
 					int isakmp_type = 0;
-					int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(udp_hdr_s);
-					if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
-						load_size = 0;
-
 					copy_bytes(packets[n] + sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr), &udp_hdr, sizeof(udp_hdr));
 
-					if (load_size > 18) {  //18?
-						int b = sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s) + 17;
-						isakmp_type = isakmp_version_type(packets[n][b]);
+					udp_hdr.src_port = _short_switcher(&udp_hdr.src_port);
+					udp_hdr.dst_port = _short_switcher(&udp_hdr.dst_port);
+
+					if (udp_hdr.src_port == 500 || udp_hdr.dst_port == 500) {
+						int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(udp_hdr_s);
+						//if (is_padding(n, pkt_hdr.incl_len, load_size))  //maybe is ethernet padding  //to improve
+						//	load_size = 0;
+						int a = sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s) + 17;
+						isakmp_type = isakmp_version_type(packets[n][a]);
 						if (isakmp_type) {
 							cnt.num_isakmp_pkts++;
 							packet_type = "ISAKMP";
@@ -473,6 +519,62 @@ parse_pcap_file(const char* input_file, int debug)
 								ipsec_flow->add_packet(n);
 							}
 						}
+					}
+					else if (udp_hdr.src_port == 4500 || udp_hdr.dst_port == 4500) {
+						int load_size = pkt_hdr.incl_len - sizeof(*eth_hdr) - sizeof(*ip_hdr) - sizeof(udp_hdr_s);
+						if ((int)packets[n][sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s)] == 0) {
+							int b = sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s) + 4 + 17;
+							isakmp_type = isakmp_version_type(packets[n][b]);
+							if (isakmp_type) {
+								cnt.num_isakmp_pkts++;
+								packet_type = "ISAKMP";
+
+								ipsec_flow = search_IP_hash_list(ip_hdr->src_ip, ip_hdr->dst_ip);
+								if (ipsec_flow == NULL) {
+									ipsec_flow = new IP_Flow;
+									ipsec_flow->init(ip_hdr->src_ip, ip_hdr->dst_ip);
+
+									ipsec_flow->add_packet(n);
+									ipsec_flow->next = NULL;
+
+									add_to_hash_table(ipsec_flow, IP_FLOW);
+									cnt.num_ipsec_flows++;
+								}
+								else {
+									ipsec_flow->add_packet(n);
+								}
+							}
+							else {
+								printf("err: port=4500,with 0000,but not isakmp! n=%d", n + 1);
+							}
+
+						}
+						else if (packets[n][sizeof(pcaprec_hdr_s) + sizeof(*eth_hdr) + sizeof(*ip_hdr) + sizeof(udp_hdr_s)]== 0xff ) {
+							packet_type = "UDPENCAP";
+						}
+						else {
+							cnt.num_esp_pkts++;
+							packet_type = "ESP";
+
+							ipsec_flow = search_IP_hash_list(ip_hdr->src_ip, ip_hdr->dst_ip);
+							if (ipsec_flow == NULL) {
+								ipsec_flow = new IP_Flow;
+								ipsec_flow->init(ip_hdr->src_ip, ip_hdr->dst_ip);
+
+								ipsec_flow->add_packet(n);
+								ipsec_flow->next = NULL;
+
+								add_to_hash_table(ipsec_flow, IP_FLOW);
+								cnt.num_ipsec_flows++;
+							}
+							else {
+								ipsec_flow->add_packet(n);
+							}
+						}
+
+
+						
+						
 					}
 
 					break;
@@ -540,10 +642,14 @@ parse_pcap_file(const char* input_file, int debug)
 	if (debug) {
 		printf("------------------------------------------------------------------------------------\n");
 		printf("\nPrinting tcp hash table...\n");
-		print_tls_flow_hash_table();
+	}
+	print_tls_flow_hash_table(debug);
+	if (debug) {
 		printf("------------------------------------------------------------------------------------\n");
 		printf("\nPrinting ipsec hash table...\n");
-		print_ipsec_flow_hash_table();
+	}
+	print_ipsec_flow_hash_table(debug);
+	if (debug) {
 		printf("------------------------------------------------------------------------------------\n");
 	}
 

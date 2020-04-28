@@ -130,12 +130,13 @@ private:
 #define TCP_FLOW 1
 
 
-uint32_t g_tls_flow_id = 0;
-uint32_t g_ipsec_flow_id = 0;
-TCP_Flow* list_of_tcp_flows = NULL;
-TCP_Flow* tls_flow_table[MAX_HASH_LENGTH];
-IP_Flow* ipsec_flow_table[MAX_HASH_LENGTH];
-TCP_Flow* accroding_flow[MAX_NUM_PACKETS];
+extern TCP_Flow* list_of_tcp_flows;
+extern TCP_Flow* tls_flow_table[];
+extern IP_Flow* ipsec_flow_table[];
+extern TCP_Flow* accroding_flow[];
+
+extern uint32_t g_tls_flow_id ;
+extern uint32_t g_ipsec_flow_id ;
 
 
 

@@ -1,37 +1,55 @@
 --------IPSec Flow 1----------
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1153218750
-resp_spi: 0
+init_spi: beb8bc44e849a922
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1493932496
-resp_spi: 0
+init_spi: d0990b59dfeec483
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1493932496
-resp_spi: 0
+init_spi: d0990b59dfeec483
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1493932496
-resp_spi: 0
+init_spi: d0990b59dfeec483
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1493932496
-resp_spi: 0
+init_spi: d0990b59dfeec483
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228
 ---------------------------------------
 ISAKMP packet:
-init_spi: 2851866506
-resp_spi: 0
+init_spi: 8a07fca96e89f7a1
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 228

@@ -504,3 +504,12 @@ namespace ipsec {
 int isakmp_version_type(uint8_t version);
 int handleESPPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug);
 int handleISAKMPPacket(unsigned char* buf, int file_size, FILE* out_fd, int debug);
+
+unsigned short _short_switcher(unsigned short* x);
+
+unsigned int _int_switcher(unsigned int* x);
+
+void conv_ip_to_str(char* str, uint32_t ip);
+
+void
+print_dotted_ips(uint32_t* ip);

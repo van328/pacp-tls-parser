@@ -1,195 +1,234 @@
 --------IPSec Flow 6----------
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 0
+init_spi: 73fd684b48a93c22
+resp_spi: 00
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 108
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 108
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 180
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 0
+msg_id: 0x0
+length: 180
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 1
+msg_id: 0x0
+length: 76
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 0
+exchange type: 2
+flags: 1
+msg_id: 0x0
+length: 76
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 1661793447
+exchange type: 32
+flags: 1
+msg_id: 0xa7f40c63
+length: 300
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 1661793447
+exchange type: 32
+flags: 1
+msg_id: 0xa7f40c63
+length: 300
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 1661793447
+exchange type: 32
+flags: 1
+msg_id: 0xa7f40c63
+length: 60
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 16777216
+spi: 114095821
+seq: 1
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 33554432
+spi: 114095821
+seq: 2
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 50331648
+spi: 114095821
+seq: 3
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 67108864
+spi: 114095821
+seq: 4
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 83886080
+spi: 114095821
+seq: 5
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 100663296
+spi: 114095821
+seq: 6
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 117440512
+spi: 114095821
+seq: 7
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 134217728
+spi: 114095821
+seq: 8
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 150994944
+spi: 114095821
+seq: 9
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 167772160
+spi: 114095821
+seq: 10
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 184549376
+spi: 114095821
+seq: 11
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 201326592
+spi: 114095821
+seq: 12
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 218103808
+spi: 114095821
+seq: 13
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 234881024
+spi: 114095821
+seq: 14
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 251658240
+spi: 114095821
+seq: 15
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 268435456
+spi: 114095821
+seq: 16
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 285212672
+spi: 114095821
+seq: 17
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 301989888
+spi: 114095821
+seq: 18
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 318767104
+spi: 114095821
+seq: 19
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 335544320
+spi: 114095821
+seq: 20
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 352321536
+spi: 114095821
+seq: 21
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 369098752
+spi: 114095821
+seq: 22
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 385875968
+spi: 114095821
+seq: 23
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 402653184
+spi: 114095821
+seq: 24
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 419430400
+spi: 114095821
+seq: 25
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 436207616
+spi: 114095821
+seq: 26
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 452984832
+spi: 114095821
+seq: 27
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 469762048
+spi: 114095821
+seq: 28
 ---------------------------------------
 esp packet:
-spi: 3455503366
-seq: 486539264
+spi: 114095821
+seq: 29
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 2622546371
+exchange type: 32
+flags: 1
+msg_id: 0xc3e1509c
+length: 300
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 2622546371
+exchange type: 32
+flags: 1
+msg_id: 0xc3e1509c
+length: 300
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 2622546371
+exchange type: 32
+flags: 1
+msg_id: 0xc3e1509c
+length: 300
 ---------------------------------------
 ISAKMP packet:
-init_spi: 1265171827
-resp_spi: 1253874361
+init_spi: 73fd684b48a93c22
+resp_spi: b99abc4a93e4adcb
 version: 1.0
-exchange type: 2622546371
+exchange type: 32
+flags: 1
+msg_id: 0xc3e1509c
+length: 300
